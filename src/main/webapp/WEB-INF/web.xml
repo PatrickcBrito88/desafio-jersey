@@ -1,0 +1,14 @@
+<web-app>
+    <servlet>
+        <servlet-name>Desafio Jersey</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>seu.pacote.infrastructure.api</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Desafio Jersey</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+</web-app>
