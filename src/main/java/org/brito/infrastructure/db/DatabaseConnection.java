@@ -9,12 +9,6 @@ import java.sql.SQLException;
 public class DatabaseConnection {
 
     public static Connection getConnection() throws SQLException {
-        System.out.println(Configurations.getDbUrl());
-        System.out.println(Configurations.getDbUser());
-        System.out.println(Configurations.getDbPassword());
-        System.out.println(Configurations.getDbName());
-
-
         return DriverManager.getConnection(
                 Configurations.getDbUrl() + Configurations.getDbName(),
                 Configurations.getDbUser(),
@@ -22,13 +16,6 @@ public class DatabaseConnection {
     }
 
     public static Connection getConnection(boolean bancoCriado) throws SQLException {
-        System.out.println(Configurations.getDbUrl());
-        System.out.println(Configurations.getDbUser());
-        System.out.println(Configurations.getDbPassword());
-        System.out.println(Configurations.getDbName());
-
-        System.out.println(bancoCriado);
-
         return DriverManager.getConnection(
                 Configurations.getDbUrl(),
                 Configurations.getDbUser(),
