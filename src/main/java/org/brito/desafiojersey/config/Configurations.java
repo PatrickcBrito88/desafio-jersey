@@ -16,8 +16,6 @@ public class Configurations {
         String dbPassword = System.getenv("DB_PASS");
         String dbName = System.getenv("DB_NAME");
         String jwtKey = System.getenv("JWT_KEY");
-        String loginAdmin = System.getenv("USER_ADMIN_LOGIN");
-        String passwordAdmin = System.getenv("USER_ADMIN_PASSWORD");
         String host = System.getenv("HOST");
 
         if (Objects.isNull(dbUrl)
@@ -25,8 +23,6 @@ public class Configurations {
                 || Objects.isNull(dbPassword)
                 || Objects.isNull(dbName)
                 || Objects.isNull(jwtKey)
-                || Objects.isNull(loginAdmin)
-                || Objects.isNull(passwordAdmin)
                 || Objects.isNull(host)) {
             throw new IllegalStateException(
                     MessageUtils.buscaValidacao("config.variaveis.ambiente.nao.encontradas"));
@@ -37,8 +33,6 @@ public class Configurations {
         System.setProperty("dbPassword", dbPassword);
         System.setProperty("dbName", dbName);
         System.setProperty("jwtKey", jwtKey);
-        System.setProperty("loginAdmin", loginAdmin);
-        System.setProperty("passwordAdmin", passwordAdmin);
         System.setProperty("host", host);
     }
 
@@ -60,14 +54,6 @@ public class Configurations {
 
     public static String getJwtKey() {
         return System.getProperty("jwtKey");
-    }
-
-    public static String getLoginAdmin() {
-        return System.getProperty("loginAdmin");
-    }
-
-    public static String getPasswordAdmin() {
-        return System.getProperty("passwordAdmin");
     }
 
     public static String getHost() {

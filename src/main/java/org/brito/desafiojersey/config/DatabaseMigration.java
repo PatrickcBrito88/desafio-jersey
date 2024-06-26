@@ -1,29 +1,49 @@
 package org.brito.desafiojersey.config;
 
-import org.brito.desafiojersey.enums.ERole;
-import org.brito.desafiojersey.dao.db.DatabaseConnection;
+import org.flywaydb.core.Flyway;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
 
-import static org.brito.desafiojersey.constantes.scripts.*;
+import static org.brito.desafiojersey.constantes.scripts.CRIAR_DATABASE;
 
 public class DatabaseMigration {
 
-    public static void iniciaBanco(){
-        criarDatabase();
-        criarTabela();
-        criarUsuario();
+    private static final String URL = Configurations.getDbUrl();
+    private static final String DB_NAME = Configurations.getDbName();
+    private static final String USER = Configurations.getDbUser();
+    private static final String PASSWORD = Configurations.getDbPassword();
+
+    private static final String USER_ADMIN = System.getenv("USER_ADMIN_LOGIN");
+    private static final String PASSWORD_ADMIN = System.getenv("USER_ADMIN_PASSWORD");
+
+
+
+    public static void iniciaBanco() {
+        criaBancoSeNaoExiste();
+
+        Flyway.configure()
+                .dataSource(URL + DB_NAME, USER, PASSWORD)
+                .placeholders(Map.of(
+                        "login", USER_ADMIN,
+                        "password", buscaPassCriptografado()
+                ))
+                .load()
+                .migrate();
+
     }
 
-    public static void criarDatabase() {
-        try (Connection conn = DatabaseConnection.getConnection(true)) {
-            String dbName = Configurations.getDbName();
+    private static void criaBancoSeNaoExiste() {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
             ResultSet resultSet = conn.getMetaData().getCatalogs();
             boolean dbExiste = false;
             while (resultSet.next()) {
                 String nomeDatabase = resultSet.getString(1);
-                if (nomeDatabase.equals(dbName)) {
+                if (nomeDatabase.equals(DB_NAME)) {
                     dbExiste = true;
                     break;
                 }
@@ -32,38 +52,18 @@ public class DatabaseMigration {
 
             if (!dbExiste) {
                 conn.createStatement().execute(CRIAR_DATABASE);
-                System.out.println("Banco de dados " + dbName + " criado com sucesso.");
+                System.out.println("Banco de dados " + DB_NAME + " criado com sucesso.");
             } else {
-                System.out.println("Banco de dados " + dbName + " já existe.");
+                System.out.println("Banco de dados " + DB_NAME + " já existe.");
             }
-        } catch (SQLException e) {
+        } catch (
+                SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public static void criarTabela() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement()) {
-            String sql = CRIAR_TABELA_USUARIOS;
-            stmt.execute(sql);
-            System.out.println("Tabela criada com sucesso.");
-        } catch (SQLException e) {
-            System.out.println("Erro ao criar a tabela: " + e.getMessage());
-        }
-    }
-
-    public static void criarUsuario() {
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(INSERIR_USUARIO)) {
-            pstmt.setString(1, Configurations.getLoginAdmin());
-            pstmt.setString(2, BCrypt.hashpw(Configurations.getPasswordAdmin(), BCrypt.gensalt(12)));
-            pstmt.setString(3, ERole.ADMIN.getRole());
-
-            pstmt.executeUpdate();
-            System.out.println("Usuário inserido com sucesso");
-        } catch (SQLException e) {
-            System.out.println("Erro ao inserir usuário: " + e.getMessage());
-        }
+    private static String buscaPassCriptografado() {
+        return BCrypt.hashpw(PASSWORD_ADMIN, BCrypt.gensalt(12));
     }
 
 }

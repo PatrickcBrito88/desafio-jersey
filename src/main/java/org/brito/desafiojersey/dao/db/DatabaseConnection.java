@@ -15,11 +15,4 @@ public class DatabaseConnection {
                 Configurations.getDbPassword());
     }
 
-    public static Connection getConnection(boolean bancoCriado) throws SQLException {
-        return DriverManager.getConnection(
-                Configurations.getDbUrl(),
-                Configurations.getDbUser(),
-                Configurations.getDbPassword());
-    }
-
 }

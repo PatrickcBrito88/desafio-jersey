@@ -14,6 +14,7 @@ public class DesafioJerseysBackendApplication {
     public static final String BASE_URI = HOST + "/api/";
 
     public static void main(String[] args) {
+
         DatabaseMigration.iniciaBanco();
         final ResourceConfig rc = new ResourceConfig()
                 .packages("org.brito.desafiojersey.controller")
