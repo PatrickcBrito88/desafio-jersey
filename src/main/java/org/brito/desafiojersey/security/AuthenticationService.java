@@ -4,6 +4,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.brito.desafiojersey.config.Configurations;
 import org.brito.desafiojersey.dao.db.DatabaseConnection;
+import org.brito.desafiojersey.exceptions.AutenticacaoException;
+import org.brito.desafiojersey.utils.MessageUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.Key;
@@ -46,7 +48,8 @@ public class AuthenticationService {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new AutenticacaoException(
+                    MessageUtils.buscaValidacao("auth.validar.password", e.getMessage()));
         }
         return null;
     }

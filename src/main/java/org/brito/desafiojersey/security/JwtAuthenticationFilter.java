@@ -8,9 +8,9 @@ import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
 import org.brito.desafiojersey.annotations.NaoAutenticado;
+import org.brito.desafiojersey.exceptions.AutenticacaoException;
 import org.brito.desafiojersey.utils.MessageUtils;
 
 import java.io.IOException;
@@ -42,10 +42,7 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
         String authorizationHeader = requestContext.getHeaderString(AUTHORIZATION_HEADER);
 
         if (Objects.isNull(authorizationHeader) || !authorizationHeader.startsWith(BEARER_PREFIX)) {
-            requestContext.abortWith(
-                    Response.status(Response.Status.UNAUTHORIZED).entity(
-                            MessageUtils.buscaValidacao("auth.nao.autenticado")).build());
-            return;
+            throw new AutenticacaoException(MessageUtils.buscaValidacao("auth.nao.autenticado"));
         }
 
         String token = authorizationHeader.substring(BEARER_PREFIX.length()).trim();
@@ -54,9 +51,7 @@ public class JwtAuthenticationFilter implements ContainerRequestFilter {
             Jwts.parser().setSigningKey(key).build().parseClaimsJws(token);
 
         } catch (JwtException | IllegalArgumentException e) {
-            requestContext.abortWith(
-                    Response.status(Response.Status.UNAUTHORIZED).entity(
-                            MessageUtils.buscaValidacao("auth.token.invalido")).build());
+            throw new AutenticacaoException(MessageUtils.buscaValidacao("auth.token.invalido"));
         }
     }
 }
