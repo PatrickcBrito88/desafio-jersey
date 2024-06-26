@@ -3,15 +3,20 @@ package org.brito.desafiojersey;
 import org.brito.desafiojersey.config.Configurations;
 import org.brito.desafiojersey.config.DatabaseMigration;
 import org.brito.desafiojersey.config.ModelMapperProvider;
+import org.brito.desafiojersey.dao.ClienteDAO;
+import org.brito.desafiojersey.dao.ClienteDAOImpl;
 import org.brito.desafiojersey.dao.UsuarioDAO;
 import org.brito.desafiojersey.dao.UsuarioDAOImpl;
+import org.brito.desafiojersey.exceptions.ClienteException;
 import org.brito.desafiojersey.exceptions.mapper.CarregamentoExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.NaoEncontradoExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.UsuarioExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.ValidacaoExceptionMapper;
 import org.brito.desafiojersey.security.JwtAuthenticationFilter;
+import org.brito.desafiojersey.services.ClienteService;
 import org.brito.desafiojersey.services.UsuarioService;
 import org.brito.desafiojersey.services.ValidacaoService;
+import org.brito.desafiojersey.services.implementation.ClienteServiceImpl;
 import org.brito.desafiojersey.services.implementation.UsuarioServiceImpl;
 import org.brito.desafiojersey.services.implementation.ValidacaoServiceImpl;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -38,6 +43,9 @@ public class DesafioJerseysBackendApplication {
                         bind(UsuarioDAOImpl.class).to(UsuarioDAO.class);
                         bind(UsuarioServiceImpl.class).to(UsuarioService.class);
                         bind(ModelMapper.class).to(ModelMapper.class);
+                        bind(ClienteDAOImpl.class).to(ClienteDAO.class);
+                        bind(ClienteServiceImpl.class).to(ClienteService.class);
+
                     }
                 })
                 .register(JwtAuthenticationFilter.class)
@@ -45,7 +53,8 @@ public class DesafioJerseysBackendApplication {
                 .register(UsuarioExceptionMapper.class)
                 .register(NaoEncontradoExceptionMapper.class)
                 .register(CarregamentoExceptionMapper.class)
-                .register(ModelMapperProvider.class);
+                .register(ModelMapperProvider.class)
+                .register(ClienteException.class);
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
         System.out.println("Api disponível em " + BASE_URI);

@@ -33,7 +33,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             if (rs.next()) {
                 return rs.getLong(1);
             } else {
-                throw new UsuarioException(MessageUtils.buscaValidacao("usuario.erro.buscar.id"));
+                throw new UsuarioException(MessageUtils.buscaValidacao("database.erro.buscar.id"));
             }
         } catch (SQLException e) {
             throw new UsuarioException(
