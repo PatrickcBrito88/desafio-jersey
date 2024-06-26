@@ -33,7 +33,6 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public ClienteDTO buscarClientePorId(long id) {
         Cliente cliente = clienteDAO.buscarClientePorId(id);
-
         return modelMapper.map(cliente, ClienteDTO.class);
     }
 
