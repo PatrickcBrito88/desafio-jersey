@@ -1,5 +1,6 @@
 package org.brito.desafiojersey.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UsuarioCredenciaisDTO {
@@ -8,7 +9,12 @@ public class UsuarioCredenciaisDTO {
     private String login;
 
     @JsonProperty("password")
+    @JsonIgnore
     private String password;
+
+    public UsuarioCredenciaisDTO(String login) {
+        this.login = login;
+    }
 
     public UsuarioCredenciaisDTO(String login, String password) {
         this.login = login;
