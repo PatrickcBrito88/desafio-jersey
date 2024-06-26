@@ -1,12 +1,10 @@
 package org.brito.config;
 
-import java.util.Map;
+import org.brito.utils.MessageUtils;
+
+import java.util.Objects;
 
 public class Configurations {
-
-    private static Map<String, String> dbConfig;
-    private static Map<String, String> jwtKey;
-    private static Map<String, String> adminData;
 
     static {
         loadConfig();
@@ -20,9 +18,18 @@ public class Configurations {
         String jwtKey = System.getenv("JWT_KEY");
         String loginAdmin = System.getenv("USER_ADMIN_LOGIN");
         String passwordAdmin = System.getenv("USER_ADMIN_PASSWORD");
+        String host = System.getenv("HOST");
 
-        if (dbUrl == null || dbUser == null || dbPassword == null || dbName == null || jwtKey == null || loginAdmin == null || passwordAdmin == null) {
-            throw new IllegalStateException("Uma ou mais variáveis de ambiente não foram definidas.");
+        if (Objects.isNull(dbUrl)
+                || Objects.isNull(dbUser)
+                || Objects.isNull(dbPassword)
+                || Objects.isNull(dbName)
+                || Objects.isNull(jwtKey)
+                || Objects.isNull(loginAdmin)
+                || Objects.isNull(passwordAdmin)
+                || Objects.isNull(host)) {
+            throw new IllegalStateException(
+                    MessageUtils.buscaValidacao("config.variaveis.ambiente.nao.encontradas"));
         }
 
         System.setProperty("dbUrl", dbUrl);
@@ -32,6 +39,7 @@ public class Configurations {
         System.setProperty("jwtKey", jwtKey);
         System.setProperty("loginAdmin", loginAdmin);
         System.setProperty("passwordAdmin", passwordAdmin);
+        System.setProperty("host", host);
     }
 
     public static String getDbUrl() {
@@ -60,6 +68,10 @@ public class Configurations {
 
     public static String getPasswordAdmin() {
         return System.getProperty("passwordAdmin");
+    }
+
+    public static String getHost() {
+        return System.getProperty("host");
     }
 
 }
