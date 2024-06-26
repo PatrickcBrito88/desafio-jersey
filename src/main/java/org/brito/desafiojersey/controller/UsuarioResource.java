@@ -5,17 +5,17 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.brito.desafiojersey.dao.UsuarioDAO;
 import org.brito.desafiojersey.dtos.UsuarioDTO;
+import org.brito.desafiojersey.services.UsuarioService;
 
 @Path("/usuario")
 public class UsuarioResource implements DefaultController {
 
-    private final UsuarioDAO usuarioDAO;
+    private final UsuarioService usuarioService;
 
     @Inject
-    public UsuarioResource(UsuarioDAO usuarioDAO) {
-        this.usuarioDAO = usuarioDAO;
+    public UsuarioResource(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
     @POST
@@ -23,7 +23,7 @@ public class UsuarioResource implements DefaultController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response cadastrar(UsuarioDTO usuarioDTO) throws Exception {
-        return retornarSucesso(usuarioDAO.salvarUsuario(usuarioDTO));
+        return retornarSucesso(usuarioService.salvarUsuario(usuarioDTO));
     }
 
     @GET
@@ -31,7 +31,7 @@ public class UsuarioResource implements DefaultController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response buscar(@PathParam("id") Integer id) throws Exception {
-        return retornarSucesso(usuarioDAO.buscarUsuarioPorId(id));
+        return retornarSucesso(usuarioService.buscarUsuarioPorId(id));
     }
 
     @PUT
@@ -39,7 +39,7 @@ public class UsuarioResource implements DefaultController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response editar(UsuarioDTO usuarioDTO, @PathParam("id") Integer id) throws Exception {
-        return retornarSucesso(usuarioDAO.atualizarUsuario(usuarioDTO, id));
+        return retornarSucesso(usuarioService.atualizarUsuario(usuarioDTO, id));
     }
 
     @DELETE
@@ -47,18 +47,17 @@ public class UsuarioResource implements DefaultController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response excluir(@PathParam("id") Integer id) throws Exception {
-        return retornarSucesso(usuarioDAO.deletarUsuario(id));
+        return retornarSucesso(usuarioService.deletarUsuario(id));
     }
 
     @GET
     @Path("/listar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listar() throws Exception {
-        return retornarSucesso(usuarioDAO.listarUsuarios());
+    public Response listar(@QueryParam("paginaAtual") @DefaultValue("0") int paginaAtual,
+                           @QueryParam("tamanhoPagina") @DefaultValue("10") int tamanhoPagina) throws Exception {
+        return retornarSucesso(usuarioService.listarUsuariosPaginado(paginaAtual, tamanhoPagina));
     }
-
-
 
 
 }

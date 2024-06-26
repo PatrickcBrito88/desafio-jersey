@@ -12,13 +12,7 @@ public class UsuarioDTO extends UsuarioCredenciaisDTO {
 
     }
 
-
     public UsuarioDTO(String login, String password, ERole role) {
-        super(login, password);
-        this.role = role;
-    }
-
-    public UsuarioDTO(String id, String login, String password, ERole role) {
         super(login, password);
         this.role = role;
     }

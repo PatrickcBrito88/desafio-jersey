@@ -1,6 +1,7 @@
 package org.brito.desafiojersey.dao;
 
 import org.brito.desafiojersey.db.DatabaseConnection;
+import org.brito.desafiojersey.domain.Usuario;
 import org.brito.desafiojersey.dtos.UsuarioDTO;
 import org.brito.desafiojersey.enums.ERole;
 import org.brito.desafiojersey.exceptions.NaoEncontradoException;
@@ -20,7 +21,7 @@ import static org.brito.desafiojersey.utils.CriptUtils.buscaPassCriptografado;
 public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override
-    public String salvarUsuario(UsuarioDTO usuarioDTO) {
+    public long salvarUsuario(UsuarioDTO usuarioDTO) {
         String sql = SqlLoaderUtils.getSql("usuario.salvar");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -30,8 +31,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                long chaveInserida = rs.getLong(1);
-                return MessageUtils.buscaValidacao("usuario.salvo.sucesso", chaveInserida);
+                return rs.getLong(1);
             } else {
                 throw new UsuarioException(MessageUtils.buscaValidacao("usuario.erro.buscar.id"));
             }
@@ -42,7 +42,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public UsuarioDTO buscarUsuarioPorId(long id) {
+    public Usuario buscarUsuarioPorId(long id) {
         String sql = SqlLoaderUtils.getSql("usuario.buscar.por.id");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -50,7 +50,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                return gerarUsuarioDTO(rs);
+                return gerarUsuario(rs);
             } else {
                 throw new NaoEncontradoException(MessageUtils.buscaValidacao("usuario.nao.encontrado", id));
             }
@@ -60,16 +60,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
     }
 
-    private static UsuarioDTO gerarUsuarioDTO(ResultSet rs) throws SQLException {
-        UsuarioDTO usuarioDTO = new UsuarioDTO();
-        usuarioDTO.setId(rs.getLong("id"));
-        usuarioDTO.setLogin(rs.getString("login"));
-        usuarioDTO.setRole(ERole.toString(rs.getString("role")));
-        return usuarioDTO;
+    private static Usuario gerarUsuario(ResultSet rs) throws SQLException {
+        Usuario usuario = new Usuario();
+        usuario.setId(rs.getLong("id"));
+        usuario.setLogin(rs.getString("login"));
+        usuario.setRole(ERole.toString(rs.getString("role")));
+        return usuario;
     }
 
     @Override
-    public String atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) {
+    public Integer atualizarUsuario(UsuarioDTO usuarioDTO, Integer id) {
         String sql = SqlLoaderUtils.getSql("usuario.atualizar");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -82,7 +82,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 throw new NaoEncontradoException(
                         MessageUtils.buscaValidacao("usuario.nao.encontrado", id));
             }
-            return MessageUtils.buscaValidacao("usuario.editado.sucesso", id);
+            return id;
         } catch (SQLException e) {
             throw new UsuarioException(
                     MessageUtils.buscaValidacao("usuario.erro.atualizar", e.getMessage()));
@@ -90,7 +90,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public String deletarUsuario(Integer id) {
+    public void deletarUsuario(Integer id) {
         String sql = SqlLoaderUtils.getSql("usuario.deletar");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -100,7 +100,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 throw new NaoEncontradoException(
                         MessageUtils.buscaValidacao("usuario.nao.encontrado", id));
             }
-            return MessageUtils.buscaValidacao("usuario.deletado.sucesso", id);
         } catch (SQLException e) {
             throw new UsuarioException(
                     MessageUtils.buscaValidacao("usuario.erro.deletar", e.getMessage()));
@@ -108,16 +107,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public List<UsuarioDTO> listarUsuarios() {
+    public List<Usuario> listarUsuarios() {
         String sql = SqlLoaderUtils.getSql("usuario.todos");
-        List<UsuarioDTO> usuarios = new ArrayList<>();
+        List<Usuario> usuarios = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                UsuarioDTO usuarioDTO = gerarUsuarioDTO(rs);
-                usuarios.add(usuarioDTO);
+                Usuario usuario = gerarUsuario(rs);
+                usuarios.add(usuario);
             }
         } catch (SQLException e) {
             throw new UsuarioException(
