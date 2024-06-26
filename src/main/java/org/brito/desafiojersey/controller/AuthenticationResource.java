@@ -6,14 +6,11 @@ import org.brito.desafiojersey.annotations.NaoAutenticado;
 import org.brito.desafiojersey.security.AuthTokenDTO;
 import org.brito.desafiojersey.security.AuthenticationService;
 import org.brito.desafiojersey.security.UsuarioCredenciaisDTO;
-import org.brito.desafiojersey.utils.MessageUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.Objects;
-
 @Path("/auth")
-public class AuthenticationResource {
+public class AuthenticationResource implements DefaultController {
 
     @POST
     @Path("/login")
@@ -21,25 +18,16 @@ public class AuthenticationResource {
     @Produces(MediaType.APPLICATION_JSON)
     @NaoAutenticado
     public Response login(UsuarioCredenciaisDTO credentials) {
-        try {
-            String token = AuthenticationService.buscarToken(credentials.getLogin(), credentials.getPassword());
-            if (Objects.isNull(token)) {
-                return Response.status(
-                        Response.Status.UNAUTHORIZED).entity(
-                                MessageUtils.buscaValidacao("credenciais.invalidas")).build();
-            }
-            return Response.ok(new AuthTokenDTO(token)).build();
-        } catch (Exception e) {
-            return Response.status(
-                    Response.Status.INTERNAL_SERVER_ERROR).entity(
-                            MessageUtils.buscaValidacao("error.servidor")).build();
-        }
+        String token = AuthenticationService.buscarToken(credentials.getLogin(), credentials.getPassword());
+        return retornarSucesso(new AuthTokenDTO(token));
+
     }
 
     @GET
     @Path("/teste")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response teste() {
-        return Response.ok("Teste").build();
+        return retornarSucesso("Teste ok");
     }
 
 }
