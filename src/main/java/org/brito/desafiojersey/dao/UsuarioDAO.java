@@ -1,4 +1,4 @@
-package org.brito.desafiojersey.db.dao;
+package org.brito.desafiojersey.dao;
 
 import org.brito.desafiojersey.dtos.UsuarioDTO;
 
@@ -10,7 +10,7 @@ public interface UsuarioDAO {
 
     UsuarioDTO buscarUsuarioPorId(long id);
 
-    UsuarioDTO editarUsuario(UsuarioDTO usuarioDTO);
+    String atualizarUsuario(UsuarioDTO usuarioDTO, Integer id);
 
     String deletarUsuario(Integer id);
 

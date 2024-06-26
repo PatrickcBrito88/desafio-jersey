@@ -2,8 +2,8 @@ package org.brito.desafiojersey;
 
 import org.brito.desafiojersey.config.Configurations;
 import org.brito.desafiojersey.config.DatabaseMigration;
-import org.brito.desafiojersey.db.dao.UsuarioDAO;
-import org.brito.desafiojersey.db.dao.UsuarioDAOImpl;
+import org.brito.desafiojersey.dao.UsuarioDAO;
+import org.brito.desafiojersey.dao.UsuarioDAOImpl;
 import org.brito.desafiojersey.exceptions.mapper.CarregamentoExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.NaoEncontradoExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.UsuarioExceptionMapper;
