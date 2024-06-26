@@ -1,7 +1,7 @@
 package org.brito.desafiojersey.config;
 
+import org.brito.desafiojersey.utils.SqlLoaderUtils;
 import org.flywaydb.core.Flyway;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import static org.brito.desafiojersey.constantes.scripts.CRIAR_DATABASE;
+import static org.brito.desafiojersey.utils.CriptUtils.buscaPassCriptografado;
+
 
 public class DatabaseMigration {
 
@@ -30,7 +31,7 @@ public class DatabaseMigration {
                 .dataSource(URL + DB_NAME, USER, PASSWORD)
                 .placeholders(Map.of(
                         "login", USER_ADMIN,
-                        "password", buscaPassCriptografado()
+                        "password", buscaPassCriptografado(PASSWORD_ADMIN)
                 ))
                 .load()
                 .migrate();
@@ -51,7 +52,8 @@ public class DatabaseMigration {
             resultSet.close();
 
             if (!dbExiste) {
-                conn.createStatement().execute(CRIAR_DATABASE);
+                String sql = SqlLoaderUtils.getSql("database.criacao");
+                conn.createStatement().execute(sql);
                 System.out.println("Banco de dados " + DB_NAME + " criado com sucesso.");
             } else {
                 System.out.println("Banco de dados " + DB_NAME + " já existe.");
@@ -62,8 +64,6 @@ public class DatabaseMigration {
         }
     }
 
-    private static String buscaPassCriptografado() {
-        return BCrypt.hashpw(PASSWORD_ADMIN, BCrypt.gensalt(12));
-    }
+
 
 }
