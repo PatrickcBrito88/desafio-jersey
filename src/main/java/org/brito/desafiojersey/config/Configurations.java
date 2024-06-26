@@ -1,6 +1,6 @@
-package org.brito.config;
+package org.brito.desafiojersey.config;
 
-import org.brito.utils.MessageUtils;
+import org.brito.desafiojersey.utils.MessageUtils;
 
 import java.util.Objects;
 

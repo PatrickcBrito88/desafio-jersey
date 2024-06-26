@@ -1,12 +1,12 @@
-package org.brito.config;
+package org.brito.desafiojersey.config;
 
-import org.brito.enums.ERole;
-import org.brito.infrastructure.db.DatabaseConnection;
+import org.brito.desafiojersey.enums.ERole;
+import org.brito.desafiojersey.dao.db.DatabaseConnection;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 
-import static org.brito.constantes.scripts.*;
+import static org.brito.desafiojersey.constantes.scripts.*;
 
 public class DatabaseMigration {
 

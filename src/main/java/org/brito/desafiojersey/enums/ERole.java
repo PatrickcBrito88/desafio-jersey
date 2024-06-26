@@ -1,4 +1,4 @@
-package org.brito.enums;
+package org.brito.desafiojersey.enums;
 
 public enum ERole {
 

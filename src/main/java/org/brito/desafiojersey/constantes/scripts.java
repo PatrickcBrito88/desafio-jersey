@@ -1,4 +1,4 @@
-package org.brito.constantes;
+package org.brito.desafiojersey.constantes;
 
 public class scripts {
 

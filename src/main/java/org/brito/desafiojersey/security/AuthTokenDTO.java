@@ -1,4 +1,4 @@
-package org.brito.security;
+package org.brito.desafiojersey.security;
 
 public class AuthTokenDTO {
 

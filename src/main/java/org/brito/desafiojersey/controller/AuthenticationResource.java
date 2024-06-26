@@ -1,14 +1,14 @@
-package org.brito.infrastructure.api;
+package org.brito.desafiojersey.controller;
 
 
 import jakarta.ws.rs.*;
-import org.brito.annotations.NaoAutenticado;
-import org.brito.security.AuthTokenDTO;
-import org.brito.security.UsuarioCredenciaisDTO;
+import org.brito.desafiojersey.annotations.NaoAutenticado;
+import org.brito.desafiojersey.security.AuthTokenDTO;
+import org.brito.desafiojersey.security.AuthenticationService;
+import org.brito.desafiojersey.security.UsuarioCredenciaisDTO;
+import org.brito.desafiojersey.utils.MessageUtils;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.brito.security.AuthenticationService;
-import org.brito.utils.MessageUtils;
 
 import java.util.Objects;
 

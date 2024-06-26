@@ -1,4 +1,4 @@
-package org.brito.security;
+package org.brito.desafiojersey.security;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -10,8 +10,8 @@ import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.Provider;
-import org.brito.annotations.NaoAutenticado;
-import org.brito.utils.MessageUtils;
+import org.brito.desafiojersey.annotations.NaoAutenticado;
+import org.brito.desafiojersey.utils.MessageUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

@@ -1,9 +1,9 @@
-package org.brito.security;
+package org.brito.desafiojersey.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.brito.config.Configurations;
-import org.brito.infrastructure.db.DatabaseConnection;
+import org.brito.desafiojersey.config.Configurations;
+import org.brito.desafiojersey.dao.db.DatabaseConnection;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.Key;
@@ -13,7 +13,7 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.Objects;
 
-import static org.brito.constantes.scripts.BUSCAR_PASSWORD_PELO_LOGIN;
+import static org.brito.desafiojersey.constantes.scripts.BUSCAR_PASSWORD_PELO_LOGIN;
 
 
 public class AuthenticationService {

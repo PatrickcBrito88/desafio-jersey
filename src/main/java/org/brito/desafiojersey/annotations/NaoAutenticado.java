@@ -1,4 +1,4 @@
-package org.brito.annotations;
+package org.brito.desafiojersey.annotations;
 
 import jakarta.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;

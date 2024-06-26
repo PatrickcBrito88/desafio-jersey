@@ -1,4 +1,4 @@
-package org.brito.utils;
+package org.brito.desafiojersey.utils;
 
 import java.text.MessageFormat;
 import java.util.Locale;

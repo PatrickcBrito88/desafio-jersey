@@ -1,6 +1,6 @@
-package org.brito.infrastructure.db;
+package org.brito.desafiojersey.dao.db;
 
-import org.brito.config.Configurations;
+import org.brito.desafiojersey.config.Configurations;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
