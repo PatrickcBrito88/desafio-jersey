@@ -2,6 +2,11 @@ package org.brito.desafiojersey;
 
 import org.brito.desafiojersey.config.Configurations;
 import org.brito.desafiojersey.config.DatabaseMigration;
+import org.brito.desafiojersey.db.dao.UsuarioDAO;
+import org.brito.desafiojersey.db.dao.UsuarioDAOImpl;
+import org.brito.desafiojersey.exceptions.mapper.CarregamentoExceptionMapper;
+import org.brito.desafiojersey.exceptions.mapper.NaoEncontradoExceptionMapper;
+import org.brito.desafiojersey.exceptions.mapper.UsuarioExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.ValidacaoExceptionMapper;
 import org.brito.desafiojersey.security.JwtAuthenticationFilter;
 import org.brito.desafiojersey.services.ValidacaoService;
@@ -26,10 +31,15 @@ public class DesafioJerseysBackendApplication {
                     @Override
                     protected void configure() {
                         bind(ValidacaoServiceImpl.class).to(ValidacaoService.class);
+                        bind(UsuarioDAOImpl.class).to(UsuarioDAO.class);
                     }
                 })
                 .register(JwtAuthenticationFilter.class)
-                .register(ValidacaoExceptionMapper.class);
+                .register(ValidacaoExceptionMapper.class)
+                .register(UsuarioExceptionMapper.class)
+                .register(NaoEncontradoExceptionMapper.class)
+                .register(CarregamentoExceptionMapper.class);
+
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
         System.out.println("Api disponível em " + BASE_URI);
     }
