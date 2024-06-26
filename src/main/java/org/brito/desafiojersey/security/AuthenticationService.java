@@ -3,9 +3,10 @@ package org.brito.desafiojersey.security;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.brito.desafiojersey.config.Configurations;
-import org.brito.desafiojersey.dao.db.DatabaseConnection;
+import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.exceptions.AutenticacaoException;
 import org.brito.desafiojersey.utils.MessageUtils;
+import org.brito.desafiojersey.utils.SqlLoaderUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.Key;
@@ -15,7 +16,6 @@ import java.sql.ResultSet;
 import java.util.Date;
 import java.util.Objects;
 
-import static org.brito.desafiojersey.constantes.scripts.BUSCAR_PASSWORD_PELO_LOGIN;
 
 
 public class AuthenticationService {
@@ -38,7 +38,7 @@ public class AuthenticationService {
     }
 
     private static String validarPassword(String login) {
-        String sql = BUSCAR_PASSWORD_PELO_LOGIN;
+        String sql = SqlLoaderUtils.getSql("usuario.busca.password.por.login");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, login);

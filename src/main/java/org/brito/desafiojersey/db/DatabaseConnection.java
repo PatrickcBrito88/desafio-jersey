@@ -1,4 +1,4 @@
-package org.brito.desafiojersey.dao.db;
+package org.brito.desafiojersey.db;
 
 import org.brito.desafiojersey.config.Configurations;
 
