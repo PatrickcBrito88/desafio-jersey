@@ -1,6 +1,7 @@
 package org.brito.desafiojersey.services.implementation;
 
 import jakarta.inject.Singleton;
+import org.brito.desafiojersey.exceptions.ValidacaoException;
 import org.brito.desafiojersey.security.AuthTokenDTO;
 import org.brito.desafiojersey.security.AuthenticationService;
 import org.brito.desafiojersey.security.UsuarioCredenciaisDTO;
@@ -18,11 +19,11 @@ public class ValidacaoServiceImpl implements ValidacaoService {
         try {
             String token = AuthenticationService.buscarToken(credentials.getLogin(), credentials.getPassword());
             if (Objects.isNull(token)) {
-                throw new Exception(MessageUtils.buscaValidacao("credenciais.invalidas"));
+                throw new ValidacaoException(MessageUtils.buscaValidacao("auth.credenciais.invalidas"));
             }
             return new AuthTokenDTO(token);
         } catch (Exception e) {
-            throw new Exception(MessageUtils.buscaValidacao("error.servidor"));
+            throw new ValidacaoException(e.getMessage());
         }
     }
 }

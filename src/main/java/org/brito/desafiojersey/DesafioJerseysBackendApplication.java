@@ -2,13 +2,13 @@ package org.brito.desafiojersey;
 
 import org.brito.desafiojersey.config.Configurations;
 import org.brito.desafiojersey.config.DatabaseMigration;
+import org.brito.desafiojersey.exceptions.mapper.ValidacaoExceptionMapper;
 import org.brito.desafiojersey.security.JwtAuthenticationFilter;
 import org.brito.desafiojersey.services.ValidacaoService;
 import org.brito.desafiojersey.services.implementation.ValidacaoServiceImpl;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
-
+import org.glassfish.jersey.server.ResourceConfig;
 
 import java.net.URI;
 
@@ -28,7 +28,8 @@ public class DesafioJerseysBackendApplication {
                         bind(ValidacaoServiceImpl.class).to(ValidacaoService.class);
                     }
                 })
-                .register(JwtAuthenticationFilter.class);
+                .register(JwtAuthenticationFilter.class)
+                .register(ValidacaoExceptionMapper.class);
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
         System.out.println("Api disponível em " + BASE_URI);
     }
