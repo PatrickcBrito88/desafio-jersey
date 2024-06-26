@@ -59,6 +59,14 @@ public class ConteinerResource implements DefaultController {
         return retornarSucesso(conteinerService.listarConteinersPaginados(paginaAtual, tamanhoPagina));
     }
 
+    @GET
+    @Path("/listar-por-cliente/{idCliente}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listarPorCliente(@PathParam("idCliente") Integer idCliente) throws Exception {
+        return retornarSucesso(conteinerService.listaConteineresPorCliente(idCliente));
+    }
+
 
 }
 

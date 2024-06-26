@@ -6,7 +6,10 @@ import org.brito.desafiojersey.dao.ConteinerDAO;
 import org.brito.desafiojersey.domain.Cliente;
 import org.brito.desafiojersey.domain.Conteiner;
 import org.brito.desafiojersey.dtos.ConteinerDTO;
+import org.brito.desafiojersey.dtos.ConteinerUsuarioDTO;
+import org.brito.desafiojersey.dtos.UsuarioDTO;
 import org.brito.desafiojersey.services.ConteinerService;
+import org.brito.desafiojersey.services.UsuarioService;
 import org.brito.desafiojersey.utils.MessageUtils;
 import org.brito.desafiojersey.utils.Page;
 import org.brito.desafiojersey.utils.PaginadorUtils;
@@ -19,12 +22,14 @@ public class ConteinerServiceImpl implements ConteinerService {
     private final ConteinerDAO conteinerDAO;
     private final ModelMapper modelMapper;
     private final ClienteDAO clienteDAO;
+    private final UsuarioService usuarioService;
 
     @Inject
-    public ConteinerServiceImpl(ConteinerDAO conteinerDAO, ModelMapper modelMapper, ClienteDAO clienteDAO) {
+    public ConteinerServiceImpl(ConteinerDAO conteinerDAO, ModelMapper modelMapper, ClienteDAO clienteDAO, UsuarioService usuarioService) {
         this.conteinerDAO = conteinerDAO;
         this.modelMapper = modelMapper;
         this.clienteDAO = clienteDAO;
+        this.usuarioService = usuarioService;
     }
 
     @Override
@@ -62,11 +67,21 @@ public class ConteinerServiceImpl implements ConteinerService {
 
     @Override
     public Page<ConteinerDTO> listarConteinersPaginados(Integer paginaAtual, Integer tamanhoPagina) {
-        List<Conteiner> usuarios = conteinerDAO.listarContaineres();
-        List<ConteinerDTO> conteinerDTOS = usuarios.stream()
+        List<Conteiner> conteineres = conteinerDAO.listarContaineres();
+        List<ConteinerDTO> conteinerDTOS = conteineres.stream()
                 .map(u -> modelMapper.map(u, ConteinerDTO.class))
                 .toList();
         return PaginadorUtils.gerarPaginacao(conteinerDTOS, paginaAtual, tamanhoPagina);
+    }
+
+    @Override
+    public ConteinerUsuarioDTO listaConteineresPorCliente(Integer idCliente) {
+        List<Conteiner> conteineres = conteinerDAO.listaConteineresPorCliente(idCliente);
+        List<ConteinerDTO> conteinerDTOS = conteineres.stream()
+                .map(u -> modelMapper.map(u, ConteinerDTO.class))
+                .toList();
+        UsuarioDTO usuarioDTO = usuarioService.buscarUsuarioPorId(idCliente);
+        return new ConteinerUsuarioDTO(usuarioDTO, conteinerDTOS);
     }
 
 }

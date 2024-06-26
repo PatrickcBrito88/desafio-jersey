@@ -141,4 +141,26 @@ public class ConteinerDAOImpl implements ConteinerDAO {
         return conteiners;
     }
 
+    @Override
+    public List<Conteiner> listaConteineresPorCliente(long idCliente) {
+        String sql = SqlLoaderUtils.getSql("conteiner.por.cliente");
+        List<Conteiner> conteiners = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, idCliente);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Conteiner conteiner = gerarContainer(rs);
+                    conteiners.add(conteiner);
+                }
+            }
+        } catch (SQLException e) {
+            throw new UsuarioException(
+                    MessageUtils.buscaValidacao("conteiner.erro.listar", e.getMessage()));
+        }
+        return conteiners;
+    }
+
+
 }

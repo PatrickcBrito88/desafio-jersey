@@ -15,4 +15,6 @@ public interface ConteinerDAO {
     void deletarContainer(Integer id);
 
     List<Conteiner> listarContaineres();
+
+    List<Conteiner> listaConteineresPorCliente(long idCliente);
 }

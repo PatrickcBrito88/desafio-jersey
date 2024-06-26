@@ -1,6 +1,7 @@
 package org.brito.desafiojersey.services;
 
 import org.brito.desafiojersey.dtos.ConteinerDTO;
+import org.brito.desafiojersey.dtos.ConteinerUsuarioDTO;
 import org.brito.desafiojersey.utils.Page;
 
 public interface ConteinerService {
@@ -14,5 +15,7 @@ public interface ConteinerService {
     String deletarConteiner(Integer id);
 
     Page<ConteinerDTO> listarConteinersPaginados(Integer paginaAtual, Integer tamanhoPagina);
+
+    ConteinerUsuarioDTO listaConteineresPorCliente(Integer idCliente);
 
 }
