@@ -1,1 +1,1 @@
-CREATE TABLE Conteineres (id SERIAL PRIMARY KEY, identificacao VARCHAR(255) NOT NULL, cliente_id INTEGER NOT NULL, tipo VARCHAR(50) NOT NULL, categoria VARCHAR(50) NOT NULL, status VARCHAR(50) NOT NULL, CONSTRAINT fk_cliente FOREIGN KEY (cliente_id) REFERENCES Clientes(id));
+CREATE TABLE Conteineres (id SERIAL PRIMARY KEY, identificacao VARCHAR(255) NOT NULL, cliente_id BIGINT NOT NULL, tipo VARCHAR(50) NOT NULL, categoria VARCHAR(50) NOT NULL, status VARCHAR(50) NOT NULL, CONSTRAINT fk_cliente FOREIGN KEY (cliente_id) REFERENCES Clientes(id));
