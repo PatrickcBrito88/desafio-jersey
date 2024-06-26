@@ -1,10 +1,10 @@
-package org.brito.authentication;
+package org.brito.security;
 
-public class AuthToken {
+public class AuthTokenDTO {
 
     private String token;
 
-    public AuthToken(String token) {
+    public AuthTokenDTO(String token) {
         this.token = token;
     }
 

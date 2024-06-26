@@ -1,8 +1,8 @@
-package org.brito.authentication;
+package org.brito.security;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UsuarioCredenciais {
+public class UsuarioCredenciaisDTO {
 
     @JsonProperty("login")
     private String login;
@@ -10,12 +10,12 @@ public class UsuarioCredenciais {
     @JsonProperty("password")
     private String password;
 
-    public UsuarioCredenciais(String login, String password) {
+    public UsuarioCredenciaisDTO(String login, String password) {
         this.login = login;
         this.password = password;
     }
 
-    public UsuarioCredenciais() {
+    public UsuarioCredenciaisDTO() {
     }
 
     public String getLogin() {
