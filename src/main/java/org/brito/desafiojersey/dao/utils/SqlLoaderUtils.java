@@ -12,10 +12,10 @@ public class SqlLoaderUtils {
     private static Properties sqlProps = new Properties();
 
     static {
-        try (InputStream input = SqlLoaderUtils.class.getClassLoader().getResourceAsStream("sql.properties")) {
+        try (InputStream input = SqlLoaderUtils.class.getClassLoader().getResourceAsStream("sql-querys.properties")) {
             if (input == null) {
                 throw new CarregamentoExternoException(
-                        MessageUtils.buscaValidacao("carregamento.externo.arquivo.nao.encontrado", "sql.properties"));
+                        MessageUtils.buscaValidacao("carregamento.externo.arquivo.nao.encontrado", "sql-querys.properties"));
             }
             sqlProps.load(input);
         } catch (IOException ex) {
