@@ -1,6 +1,7 @@
 package org.brito.desafiojersey.dao.implementation;
 
 import jakarta.inject.Inject;
+import org.brito.desafiojersey.dao.ConteinerDAO;
 import org.brito.desafiojersey.dao.ConteineresMovimentacoesDAO;
 import org.brito.desafiojersey.dao.MovimentacaoDAO;
 import org.brito.desafiojersey.db.DatabaseConnection;
@@ -14,10 +15,7 @@ import org.brito.desafiojersey.exceptions.UsuarioException;
 import org.brito.desafiojersey.utils.MessageUtils;
 import org.brito.desafiojersey.utils.SqlLoaderUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +23,12 @@ import java.util.List;
 public class MovimentacaoDAOImpl implements MovimentacaoDAO {
 
     private final ConteineresMovimentacoesDAO conteineresMovimentacoesDAO;
+    private final ConteinerDAO conteinerDAO;
 
     @Inject
-    public MovimentacaoDAOImpl(ConteineresMovimentacoesDAO conteineresMovimentacoesDAO) {
+    public MovimentacaoDAOImpl(ConteineresMovimentacoesDAO conteineresMovimentacoesDAO, ConteinerDAO conteinerDAO) {
         this.conteineresMovimentacoesDAO = conteineresMovimentacoesDAO;
+        this.conteinerDAO = conteinerDAO;
     }
 
     @Override
@@ -154,15 +154,14 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
         return movimentacoes;
     }
 
-    private static Movimentacao gerarMovimentacao(ResultSet rs) throws SQLException {
+    private Movimentacao gerarMovimentacao(ResultSet rs) throws SQLException {
         Movimentacao movimentacao = new Movimentacao();
+        Timestamp timestamp = rs.getTimestamp("hora_fim");
         movimentacao.setId(rs.getLong("id"));
-        movimentacao.setHoraFim(rs.getTimestamp("hora_fim").toLocalDateTime());
+        movimentacao.setHoraFim((timestamp != null) ? timestamp.toLocalDateTime() : null);
         movimentacao.setHoraInicio(rs.getTimestamp("hora_inicio").toLocalDateTime());
 
-        Conteiner conteiner = new Conteiner();
-        conteiner.setId(rs.getLong("conteiner_id"));
-
+        Conteiner conteiner = conteinerDAO.buscarContainerPorId(rs.getLong("conteiner_id"));
         movimentacao.setConteiner(conteiner);
         movimentacao.setTipo(ETipoMovimentacao.valueOf(rs.getString("tipo")));
 
