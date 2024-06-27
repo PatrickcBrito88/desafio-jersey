@@ -51,6 +51,20 @@ O projeto é uma aplicação de gestão para o cadastro e rastreamento de contê
 ## Estrutura do Projeto
 O projeto segue a organização padrão Maven com diretórios para código fonte (`src/main/java`) e recursos (`src/main/resources`).
 
+## Variáveis de Ambiente
+Para executar a aplicação, as seguintes variáveis de ambiente devem ser configuradas:
+
+| Variável               | Descrição                              |
+|------------------------|----------------------------------------|
+| `DB_NAME`              | NOME DO BANCO DE DADOS                 |
+| `DB_PASS`              | PASSWORD DO BANCO DE DADOS             |
+| `DB_URL`               | URL DE CONEXÃO                         |
+| `DB_USER`              | USUÁRIO DE BANCO DE DADOS              |
+| `USER_ADMIN_LOGIN`     | USUÁRIO ADMINISTRADOR                  |
+| `USER_ADMIN_PASSWORD`  | PASSWORD DO USUÁRIO ADMINISTRADOR      |
+| `JWT_KEY`              | KEY PARA CODIFICAÇÃO JWT               |
+| `HOST`                 | HOST DA APLICAÇÃO                      |
+
 ## Configuração e Execução
 1. Clone o repositório:
    ```bash
