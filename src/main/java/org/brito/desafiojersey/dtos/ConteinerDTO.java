@@ -1,5 +1,7 @@
 package org.brito.desafiojersey.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.brito.desafiojersey.enums.ECategoria;
 import org.brito.desafiojersey.enums.EStatus;
 import org.brito.desafiojersey.enums.ETipoConteiner;
@@ -11,10 +13,13 @@ public class ConteinerDTO {
 
     private Long id;
 
+    @NotBlank(message = "{conteiner.identificacao.em.branco}")
     private String identificacao;
 
+    @NotNull(message = "{conteiner.cliente.nulo}")
     private ClienteDTO cliente;
 
+    @NotNull(message = "Erro no enum")
     private ETipoConteiner tipo;
 
     private ECategoria categoria;

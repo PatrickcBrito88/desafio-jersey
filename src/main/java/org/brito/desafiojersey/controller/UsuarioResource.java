@@ -2,6 +2,7 @@ package org.brito.desafiojersey.controller;
 
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +23,7 @@ public class UsuarioResource implements DefaultController {
     @Path("/cadastrar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response cadastrar(UsuarioDTO usuarioDTO) throws Exception {
+    public Response cadastrar(@Valid UsuarioDTO usuarioDTO) throws Exception {
         return retornarSucesso(usuarioService.salvarUsuario(usuarioDTO));
     }
 
@@ -38,7 +39,7 @@ public class UsuarioResource implements DefaultController {
     @Path("/editar/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editar(UsuarioDTO usuarioDTO, @PathParam("id") Integer id) throws Exception {
+    public Response editar(@Valid UsuarioDTO usuarioDTO, @PathParam("id") Integer id) throws Exception {
         return retornarSucesso(usuarioService.atualizarUsuario(usuarioDTO, id));
     }
 

@@ -2,6 +2,7 @@ package org.brito.desafiojersey.controller;
 
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +23,7 @@ public class ConteinerResource implements DefaultController {
     @Path("/cadastrar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response cadastrar(ConteinerDTO conteinerDTO) throws Exception {
+    public Response cadastrar(@Valid ConteinerDTO conteinerDTO) throws Exception {
         return retornarSucesso(conteinerService.salvarConteiner(conteinerDTO));
     }
 
@@ -38,7 +39,7 @@ public class ConteinerResource implements DefaultController {
     @Path("/editar/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editar(ConteinerDTO conteinerDTO, @PathParam("id") Integer id) throws Exception {
+    public Response editar(@Valid ConteinerDTO conteinerDTO, @PathParam("id") Integer id) throws Exception {
         return retornarSucesso(conteinerService.atualizarConteiner(conteinerDTO, id));
     }
 

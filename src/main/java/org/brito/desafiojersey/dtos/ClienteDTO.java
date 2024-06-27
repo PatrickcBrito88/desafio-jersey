@@ -1,9 +1,12 @@
 package org.brito.desafiojersey.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class ClienteDTO {
 
     private Long id;
 
+    @NotBlank(message = "{cliente.nome.em.branco}")
     private String nome;
 
     public Long getId() {

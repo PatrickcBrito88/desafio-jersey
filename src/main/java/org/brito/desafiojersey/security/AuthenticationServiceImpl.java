@@ -2,7 +2,7 @@ package org.brito.desafiojersey.security;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.brito.desafiojersey.config.Configurations;
+import org.brito.desafiojersey.config.VariaveisAmbienteConfig;
 import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.exceptions.AutenticacaoException;
@@ -64,7 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private static byte[] gerarChaveSecreta() {
-        String jwtKey = Configurations.getJwtKey();
+        String jwtKey = VariaveisAmbienteConfig.getJwtKey();
         return jwtKey.getBytes(java.nio.charset.StandardCharsets.UTF_8);
     }
 

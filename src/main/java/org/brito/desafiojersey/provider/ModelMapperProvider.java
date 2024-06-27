@@ -1,4 +1,4 @@
-package org.brito.desafiojersey.config;
+package org.brito.desafiojersey.provider;
 
 import jakarta.inject.Singleton;
 import org.glassfish.jersey.internal.inject.AbstractBinder;

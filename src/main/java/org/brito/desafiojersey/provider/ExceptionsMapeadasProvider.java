@@ -1,11 +1,12 @@
-package org.brito.desafiojersey.config;
+package org.brito.desafiojersey.provider;
 
+import org.brito.desafiojersey.config.ObjectMapperConfig;
 import org.brito.desafiojersey.exceptions.mapper.*;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.validation.ValidationFeature;
 
-public class ExceptionsMapeadas extends ResourceConfig {
-    public ExceptionsMapeadas() {
+public class ExceptionsMapeadasProvider extends ResourceConfig {
+    public ExceptionsMapeadasProvider() {
         register(AutenticacaoExceptionMapper.class);
         register(UsuarioExceptionMapper.class);
         register(NaoEncontradoExceptionMapper.class);
@@ -17,6 +18,7 @@ public class ExceptionsMapeadas extends ResourceConfig {
         register(ConflitoExceptionMapper.class);
         register(ValidationFeature.class);
         register(ValidationExceptionMapper.class);
+        register(ObjectMapperConfig.class);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.brito.desafiojersey.dtos;
 
+import jakarta.validation.constraints.NotNull;
 import org.brito.desafiojersey.enums.ETipoMovimentacao;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class MovimentacaoDTO {
 
     private LocalDateTime horaFim;
 
+    @NotNull(message = "{movimentacao.container.nulo}")
     private ConteinerDTO conteiner;
 
     public Long getId() {

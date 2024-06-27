@@ -2,6 +2,7 @@ package org.brito.desafiojersey.controller;
 
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +23,7 @@ public class MovimentacaoResource implements DefaultController {
     @Path("/criar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response criar(MovimentacaoDTO movimentacaoDTO) throws Exception {
+    public Response criar(@Valid MovimentacaoDTO movimentacaoDTO) throws Exception {
         return retornarSucesso(movimentacaoService.criarMovimentacao(movimentacaoDTO));
     }
 

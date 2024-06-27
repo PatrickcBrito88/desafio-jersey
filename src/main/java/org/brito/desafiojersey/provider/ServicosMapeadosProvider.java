@@ -1,4 +1,4 @@
-package org.brito.desafiojersey.config;
+package org.brito.desafiojersey.provider;
 
 import org.brito.desafiojersey.dao.*;
 import org.brito.desafiojersey.dao.implementation.*;
@@ -9,7 +9,7 @@ import org.brito.desafiojersey.services.implementation.*;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.modelmapper.ModelMapper;
 
-public class ServicosMapeados extends AbstractBinder{
+public class ServicosMapeadosProvider extends AbstractBinder{
 
     @Override
     protected void configure() {

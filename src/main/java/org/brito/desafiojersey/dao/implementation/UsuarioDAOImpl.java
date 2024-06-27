@@ -31,8 +31,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             stmt.executeUpdate();
             return buscarKeyGerada(stmt);
         } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("usuario.erro.salvar", e.getMessage()));
+            throw new UsuarioException(e.getMessage());
         }
     }
 
@@ -133,6 +132,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         return new Usuario(
                 rs.getLong("id"),
                 rs.getString("login"),
-                ERole.valueOf(rs.getString("role")));
+                ERole.toString(rs.getString("role")));
     }
 }

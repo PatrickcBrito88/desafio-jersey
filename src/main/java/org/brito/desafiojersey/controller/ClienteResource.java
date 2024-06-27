@@ -39,7 +39,7 @@ public class ClienteResource implements DefaultController {
     @Path("/editar/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editar(ClienteDTO clienteDTO, @PathParam("id") Integer id) throws Exception {
+    public Response editar(@Valid ClienteDTO clienteDTO, @PathParam("id") Integer id) throws Exception {
         return retornarSucesso(clienteService.atualizarCliente(clienteDTO, id));
     }
 
