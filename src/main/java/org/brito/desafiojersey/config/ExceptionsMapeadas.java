@@ -2,10 +2,11 @@ package org.brito.desafiojersey.config;
 
 import org.brito.desafiojersey.exceptions.mapper.*;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.validation.ValidationFeature;
 
 public class ExceptionsMapeadas extends ResourceConfig {
     public ExceptionsMapeadas() {
-        register(ValidacaoExceptionMapper.class);
+        register(AutenticacaoExceptionMapper.class);
         register(UsuarioExceptionMapper.class);
         register(NaoEncontradoExceptionMapper.class);
         register(CarregamentoExceptionMapper.class);
@@ -14,6 +15,8 @@ public class ExceptionsMapeadas extends ResourceConfig {
         register(MovimentacaoExceptionMapper.class);
         register(DatabaseExceptionMapper.class);
         register(ConflitoExceptionMapper.class);
+        register(ValidationFeature.class);
+        register(ValidationExceptionMapper.class);
     }
 
 }

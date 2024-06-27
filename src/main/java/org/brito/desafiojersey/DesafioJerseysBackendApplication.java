@@ -20,7 +20,7 @@ public class DesafioJerseysBackendApplication {
 
     private static ResourceConfig buildResourceConfig() {
         return new ResourceConfig()
-                .packages("org.brito.desafiojersey.controller")
+                .packages("org.brito.desafiojersey.controller", "org.brito.desafiojersey.exceptions.mapper")
                 .register(new ServicosMapeados())
                 .register(ExceptionsMapeadas.class);
     }

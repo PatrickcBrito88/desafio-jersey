@@ -1,25 +1,16 @@
 package org.brito.desafiojersey.exceptions.mapper;
 
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
-import org.brito.desafiojersey.exceptions.ErrorResponse;
-import org.brito.desafiojersey.exceptions.UsuarioException;
+import org.brito.desafiojersey.exceptions.ClienteException;
 
-public class ClienteExceptionMapper implements ExceptionMapper<UsuarioException> {
+public class ClienteExceptionMapper implements ExceptionMapper<ClienteException> {
 
     @Override
-    public Response toResponse(UsuarioException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(
+    public Response toResponse(ClienteException ex) {
+        return new ExceptionBuilder(
                 Response.Status.BAD_REQUEST.getStatusCode(),
                 ex.getMessage()
-        );
-
-        return Response
-                .status(Response.Status.BAD_REQUEST)
-                .entity(errorResponse)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+        ).build();
     }
-
 }
