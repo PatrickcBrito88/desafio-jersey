@@ -1,0 +1,1 @@
+CREATE TABLE conteineres (id SERIAL PRIMARY KEY, identificacao VARCHAR(255) NOT NULL, cliente_id INT NOT NULL, tipo VARCHAR(255) NOT NULL, categoria VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, CONSTRAINT fk_cliente FOREIGN KEY (cliente_id) REFERENCES clientes (id));

@@ -1,7 +1,7 @@
 package org.brito.desafiojersey.dtos;
 
 import org.brito.desafiojersey.enums.ERole;
-import org.brito.desafiojersey.security.UsuarioCredenciaisDTO;
+import org.brito.desafiojersey.security.dtos.UsuarioCredenciaisDTO;
 
 public class UsuarioDTO extends UsuarioCredenciaisDTO {
 

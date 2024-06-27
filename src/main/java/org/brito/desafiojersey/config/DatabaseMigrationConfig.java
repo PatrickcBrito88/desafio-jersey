@@ -1,6 +1,6 @@
 package org.brito.desafiojersey.config;
 
-import org.brito.desafiojersey.utils.SqlLoaderUtils;
+import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.flywaydb.core.Flyway;
 
 import java.sql.Connection;
@@ -12,12 +12,12 @@ import java.util.Map;
 import static org.brito.desafiojersey.utils.CriptUtils.buscaPassCriptografado;
 
 
-public class DatabaseMigration {
+public class DatabaseMigrationConfig {
 
-    private static final String URL = Configurations.getDbUrl();
-    private static final String DB_NAME = Configurations.getDbName();
-    private static final String USER = Configurations.getDbUser();
-    private static final String PASSWORD = Configurations.getDbPassword();
+    private static final String URL = VariaveisAmbienteConfig.getDbUrl();
+    private static final String DB_NAME = VariaveisAmbienteConfig.getDbName();
+    private static final String USER = VariaveisAmbienteConfig.getDbUser();
+    private static final String PASSWORD = VariaveisAmbienteConfig.getDbPassword();
 
     private static final String USER_ADMIN = System.getenv("USER_ADMIN_LOGIN");
     private static final String PASSWORD_ADMIN = System.getenv("USER_ADMIN_PASSWORD");

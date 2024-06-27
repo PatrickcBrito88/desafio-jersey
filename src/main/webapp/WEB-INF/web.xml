@@ -4,7 +4,7 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>seu.pacote.infrastructure.api</param-value>
+            <param-value>org.brito.desafiojersey</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

@@ -1,0 +1,1 @@
+CREATE TABLE conteiner_movimentacoes (conteiner_id INT NOT NULL, movimentacao_id INT NOT NULL, CONSTRAINT pk_conteiner_movimentacoes PRIMARY KEY (conteiner_id, movimentacao_id), CONSTRAINT fk_conteiner FOREIGN KEY (conteiner_id) REFERENCES conteineres (id) ON DELETE CASCADE, CONSTRAINT fk_movimentacao FOREIGN KEY (movimentacao_id) REFERENCES movimentacao (id) ON DELETE CASCADE);

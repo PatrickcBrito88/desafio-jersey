@@ -1,6 +1,7 @@
-package org.brito.desafiojersey.utils;
+package org.brito.desafiojersey.dao.utils;
 
 import org.brito.desafiojersey.exceptions.CarregamentoExternoException;
+import org.brito.desafiojersey.utils.MessageUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +12,10 @@ public class SqlLoaderUtils {
     private static Properties sqlProps = new Properties();
 
     static {
-        try (InputStream input = SqlLoaderUtils.class.getClassLoader().getResourceAsStream("sql.properties")) {
+        try (InputStream input = SqlLoaderUtils.class.getClassLoader().getResourceAsStream("sql-querys.properties")) {
             if (input == null) {
                 throw new CarregamentoExternoException(
-                        MessageUtils.buscaValidacao("carregamento.externo.arquivo.nao.encontrado", "sql.properties"));
+                        MessageUtils.buscaValidacao("carregamento.externo.arquivo.nao.encontrado", "sql-querys.properties"));
             }
             sqlProps.load(input);
         } catch (IOException ex) {

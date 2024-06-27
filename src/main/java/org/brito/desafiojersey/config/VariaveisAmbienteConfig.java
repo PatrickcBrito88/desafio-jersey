@@ -4,7 +4,7 @@ import org.brito.desafiojersey.utils.MessageUtils;
 
 import java.util.Objects;
 
-public class Configurations {
+public class VariaveisAmbienteConfig {
 
     static {
         loadConfig();

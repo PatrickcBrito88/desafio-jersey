@@ -1,0 +1,1 @@
+CREATE TABLE Movimentacao (id SERIAL PRIMARY KEY,tipo VARCHAR(50) NOT NULL,hora_inicio TIMESTAMP ,hora_fim TIMESTAMP,conteiner_id INTEGER, CONSTRAINT fk_conteiner FOREIGN KEY (conteiner_id) REFERENCES conteineres(id));
