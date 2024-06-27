@@ -11,6 +11,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/**
+ * Implementação da interface {@link ConteinerMovimentacaoDAO} para gerenciamento das movimentações de contêineres utilizando JDBC.
+ */
 public class ConteinerMovimentacaoDAOImpl implements ConteinerMovimentacaoDAO {
 
     @Override

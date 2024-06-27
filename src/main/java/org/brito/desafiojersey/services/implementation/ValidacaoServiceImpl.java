@@ -11,6 +11,9 @@ import org.brito.desafiojersey.utils.MessageUtils;
 
 import java.util.Objects;
 
+/**
+ * Implementação da interface {@link ValidacaoService}, gerenciando a validação de credenciais usando um serviço de autenticação.
+ */
 @Singleton
 public class ValidacaoServiceImpl implements ValidacaoService {
 

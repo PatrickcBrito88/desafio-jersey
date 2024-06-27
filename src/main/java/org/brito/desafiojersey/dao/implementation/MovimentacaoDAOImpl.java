@@ -21,6 +21,9 @@ import java.util.List;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
 
+/**
+ * Implementação da interface {@link MovimentacaoDAO} utilizando JDBC e injeção de dependências para gerenciar movimentações.
+ */
 public class MovimentacaoDAOImpl implements MovimentacaoDAO {
     private final ConteinerMovimentacaoDAO conteinerMovimentacaoDAO;
     private final ConteinerDAO conteinerDAO;

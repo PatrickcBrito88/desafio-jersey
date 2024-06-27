@@ -18,6 +18,9 @@ import java.util.List;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
 
+/**
+ * Implementação da interface {@link ClienteDAO} utilizando JDBC.
+ */
 public class ClienteDAOImpl implements ClienteDAO {
 
     @Override

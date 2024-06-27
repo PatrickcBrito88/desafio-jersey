@@ -15,6 +15,9 @@ import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
+/**
+ * Implementação da interface {@link ClienteService}, gerenciando operações de clientes usando DAOs.
+ */
 public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteDAO clienteDAO;

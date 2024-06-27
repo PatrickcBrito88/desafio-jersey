@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Implementação da interface {@link MovimentacaoService}, gerenciando operações de movimentações usando DAOs.
+ */
 public class MovimentacaoServiceImpl implements MovimentacaoService {
 
     private final ConteinerDAO conteinerDAO;

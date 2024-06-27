@@ -23,6 +23,9 @@ import java.util.List;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
 
+/**
+ * Implementação da interface {@link ConteinerDAO} utilizando JDBC e injeção de dependências.
+ */
 public class ConteinerDAOImpl implements ConteinerDAO {
 
     private final ClienteDAO clienteDAO;

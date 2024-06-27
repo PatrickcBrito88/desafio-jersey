@@ -20,6 +20,9 @@ import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
+/**
+ * Implementação da interface {@link ConteinerService}, gerenciando operações de contêineres usando DAOs.
+ */
 public class ConteinerServiceImpl implements ConteinerService {
 
     private final ConteinerDAO conteinerDAO;

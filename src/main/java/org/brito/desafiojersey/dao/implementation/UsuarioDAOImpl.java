@@ -20,6 +20,9 @@ import java.util.List;
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
 import static org.brito.desafiojersey.utils.CriptUtils.buscaPassCriptografado;
 
+/**
+ * Implementação da interface {@link UsuarioDAO} utilizando JDBC.
+ */
 public class UsuarioDAOImpl implements UsuarioDAO {
 
     @Override

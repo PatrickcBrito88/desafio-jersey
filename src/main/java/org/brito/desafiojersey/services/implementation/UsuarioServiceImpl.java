@@ -12,6 +12,9 @@ import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
+/**
+ * Implementação da interface {@link UsuarioService}, gerenciando operações de usuários usando DAOs.
+ */
 public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioDAO usuarioDAO;
