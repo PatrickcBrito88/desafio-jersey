@@ -34,7 +34,7 @@ public class ConteinerServiceImpl implements ConteinerService {
 
     @Override
     public String salvarConteiner(ConteinerDTO conteinerDTO) {
-        Cliente cliente = clienteDAO.buscarClientePorId(conteinerDTO.getClienteId());
+        Cliente cliente = clienteDAO.buscarClientePorId(conteinerDTO.getCliente().getId());
         Conteiner conteiner = modelMapper.map(conteinerDTO, Conteiner.class);
         conteiner.setCliente(modelMapper.map(cliente, Cliente.class));
         long idInserido = conteinerDAO.salvarContainer(conteiner);
@@ -51,7 +51,7 @@ public class ConteinerServiceImpl implements ConteinerService {
 
     @Override
     public String atualizarConteiner(ConteinerDTO conteinerDTO, Integer id) {
-        Cliente cliente = clienteDAO.buscarClientePorId(conteinerDTO.getClienteId());
+        Cliente cliente = clienteDAO.buscarClientePorId(conteinerDTO.getCliente().getId());
         Conteiner conteiner = modelMapper.map(conteinerDTO, Conteiner.class);
         conteiner.setCliente(modelMapper.map(cliente, Cliente.class));
         Integer idAtualizado = conteinerDAO.atualizarContainer(conteiner, id);

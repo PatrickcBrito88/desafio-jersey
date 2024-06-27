@@ -2,7 +2,7 @@ package org.brito.desafiojersey.domain;
 
 import org.brito.desafiojersey.enums.ETipoMovimentacao;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public class Movimentacao {
 
@@ -10,11 +10,22 @@ public class Movimentacao {
 
     private ETipoMovimentacao tipo;
 
-    private OffsetDateTime horaInicio;
+    private LocalDateTime horaInicio;
 
-    private OffsetDateTime horaFim;
+    private LocalDateTime horaFim;
 
     private Conteiner conteiner;
+
+    public Movimentacao() {
+    }
+
+    public Movimentacao(Long id, ETipoMovimentacao tipo, Conteiner conteiner) {
+        this.id = id;
+        this.tipo = tipo;
+        this.horaInicio = LocalDateTime.now();;
+        this.horaFim = null;
+        this.conteiner = conteiner;
+    }
 
     public Long getId() {
         return id;
@@ -32,19 +43,19 @@ public class Movimentacao {
         this.tipo = tipo;
     }
 
-    public OffsetDateTime getHoraInicio() {
+    public LocalDateTime getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(OffsetDateTime horaInicio) {
+    public void setHoraInicio(LocalDateTime horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public OffsetDateTime getHoraFim() {
+    public LocalDateTime getHoraFim() {
         return horaFim;
     }
 
-    public void setHoraFim(OffsetDateTime horaFim) {
+    public void setHoraFim(LocalDateTime horaFim) {
         this.horaFim = horaFim;
     }
 
@@ -55,4 +66,5 @@ public class Movimentacao {
     public void setConteiner(Conteiner conteiner) {
         this.conteiner = conteiner;
     }
+
 }

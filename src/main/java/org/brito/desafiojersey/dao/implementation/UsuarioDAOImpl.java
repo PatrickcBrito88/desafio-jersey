@@ -1,5 +1,6 @@
-package org.brito.desafiojersey.dao;
+package org.brito.desafiojersey.dao.implementation;
 
+import org.brito.desafiojersey.dao.UsuarioDAO;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.domain.Usuario;
 import org.brito.desafiojersey.dtos.UsuarioDTO;

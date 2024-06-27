@@ -1,5 +1,8 @@
-package org.brito.desafiojersey.dao;
+package org.brito.desafiojersey.dao.implementation;
 
+import jakarta.inject.Inject;
+import org.brito.desafiojersey.dao.ClienteDAO;
+import org.brito.desafiojersey.dao.ConteinerDAO;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.domain.Cliente;
 import org.brito.desafiojersey.domain.Conteiner;
@@ -20,6 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConteinerDAOImpl implements ConteinerDAO {
+
+    private final ClienteDAO clienteDAO;
+
+    @Inject
+    public ConteinerDAOImpl(ClienteDAO clienteDAO) {
+        this.clienteDAO = clienteDAO;
+    }
 
     @Override
     public long salvarContainer(Conteiner conteiner) {
@@ -64,13 +74,12 @@ public class ConteinerDAOImpl implements ConteinerDAO {
         }
     }
 
-    private static Conteiner gerarContainer(ResultSet rs) throws SQLException {
+    private Conteiner gerarContainer(ResultSet rs) throws SQLException {
         Conteiner conteiner = new Conteiner();
         conteiner.setId(rs.getLong("id"));
         conteiner.setIdentificacao(rs.getString("identificacao"));
 
-        Cliente cliente = new Cliente();
-        cliente.setId(rs.getLong("cliente_id"));
+        Cliente cliente = clienteDAO.buscarClientePorId(rs.getLong("cliente_id"));
 
         conteiner.setCliente(cliente);
         conteiner.setTipo(ETipoConteiner.valueOf(rs.getString("tipo")));

@@ -9,9 +9,11 @@ import java.util.List;
 
 public class ConteinerDTO {
 
+    private Long id;
+
     private String identificacao;
 
-    private Integer clienteId;
+    private ClienteDTO cliente;
 
     private ETipoConteiner tipo;
 
@@ -21,6 +23,22 @@ public class ConteinerDTO {
 
     private List<MovimentacaoDTO> movimentacoes = new ArrayList<>();
 
+    public ClienteDTO getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(ClienteDTO cliente) {
+        this.cliente = cliente;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getIdentificacao() {
         return identificacao;
     }
@@ -29,13 +47,6 @@ public class ConteinerDTO {
         this.identificacao = identificacao;
     }
 
-    public Integer getClienteId() {
-        return clienteId;
-    }
-
-    public void setClienteId(Integer clienteId) {
-        this.clienteId = clienteId;
-    }
 
     public ETipoConteiner getTipo() {
         return tipo;

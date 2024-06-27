@@ -3,22 +3,19 @@ package org.brito.desafiojersey;
 import org.brito.desafiojersey.config.Configurations;
 import org.brito.desafiojersey.config.DatabaseMigration;
 import org.brito.desafiojersey.config.ModelMapperProvider;
+import org.brito.desafiojersey.config.ObjectMapper;
 import org.brito.desafiojersey.dao.*;
+import org.brito.desafiojersey.dao.implementation.*;
 import org.brito.desafiojersey.exceptions.ClienteException;
 import org.brito.desafiojersey.exceptions.ConteinerException;
+import org.brito.desafiojersey.exceptions.MovimentacaoException;
 import org.brito.desafiojersey.exceptions.mapper.CarregamentoExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.NaoEncontradoExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.UsuarioExceptionMapper;
 import org.brito.desafiojersey.exceptions.mapper.ValidacaoExceptionMapper;
 import org.brito.desafiojersey.security.JwtAuthenticationFilter;
-import org.brito.desafiojersey.services.ClienteService;
-import org.brito.desafiojersey.services.ConteinerService;
-import org.brito.desafiojersey.services.UsuarioService;
-import org.brito.desafiojersey.services.ValidacaoService;
-import org.brito.desafiojersey.services.implementation.ClienteServiceImpl;
-import org.brito.desafiojersey.services.implementation.ConteinerServiceImpl;
-import org.brito.desafiojersey.services.implementation.UsuarioServiceImpl;
-import org.brito.desafiojersey.services.implementation.ValidacaoServiceImpl;
+import org.brito.desafiojersey.services.*;
+import org.brito.desafiojersey.services.implementation.*;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -47,6 +44,9 @@ public class DesafioJerseysBackendApplication {
                         bind(ClienteServiceImpl.class).to(ClienteService.class);
                         bind(ConteinerDAOImpl.class).to(ConteinerDAO.class);
                         bind(ConteinerServiceImpl.class).to(ConteinerService.class);
+                        bind(MovimentacaoDAOImpl.class).to(MovimentacaoDAO.class);
+                        bind(MovimentacaoServiceImpl.class).to(MovimentacaoService.class);
+                        bind(ConteineresMovimentacoesDAOImpl.class).to(ConteineresMovimentacoesDAO.class);
 
                     }
                 })
@@ -57,7 +57,9 @@ public class DesafioJerseysBackendApplication {
                 .register(CarregamentoExceptionMapper.class)
                 .register(ModelMapperProvider.class)
                 .register(ClienteException.class)
-                .register(ConteinerException.class);
+                .register(ConteinerException.class)
+                .register(MovimentacaoException.class)
+                .register(new ObjectMapper());
 
         GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
         System.out.println("Api disponível em " + BASE_URI);
