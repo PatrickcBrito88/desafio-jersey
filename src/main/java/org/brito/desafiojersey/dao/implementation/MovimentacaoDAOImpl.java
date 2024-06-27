@@ -10,8 +10,6 @@ import org.brito.desafiojersey.domain.ConteineresMovimentacoes;
 import org.brito.desafiojersey.domain.Movimentacao;
 import org.brito.desafiojersey.enums.ETipoMovimentacao;
 import org.brito.desafiojersey.exceptions.MovimentacaoException;
-import org.brito.desafiojersey.exceptions.NaoEncontradoException;
-import org.brito.desafiojersey.exceptions.UsuarioException;
 import org.brito.desafiojersey.utils.MessageUtils;
 import org.brito.desafiojersey.utils.SqlLoaderUtils;
 
@@ -21,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MovimentacaoDAOImpl implements MovimentacaoDAO {
-
     private final ConteineresMovimentacoesDAO conteineresMovimentacoesDAO;
     private final ConteinerDAO conteinerDAO;
 
@@ -32,139 +29,136 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
     }
 
     @Override
-    public long criarMovimentacao(Movimentacao movimentacao) {
+    public long criarMovimentacao(Movimentacao movimentacao) throws MovimentacaoException {
         String sql = SqlLoaderUtils.getSql("movimentacao.criar");
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, movimentacao.getTipo().name());
-            stmt.setTimestamp(2, java.sql.Timestamp.valueOf(movimentacao.getHoraInicio()));
-            stmt.setTimestamp(3, movimentacao.getHoraFim() == null ? null : java.sql.Timestamp.valueOf(movimentacao.getHoraFim()));
-            stmt.setLong(4, movimentacao.getConteiner().getId());
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                long idInserido = rs.getLong(1);
-                conteineresMovimentacoesDAO.insereConteineresMovimentacoes(new ConteineresMovimentacoes(movimentacao.getConteiner().getId(), idInserido));
-                return idInserido;
-            } else {
-                throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.conteiner.erro"));
-            }
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            preencherStatementCriar(stmt, movimentacao);
+            stmt.executeUpdate();
+            return relacionarContainerMovimentacao(stmt, movimentacao);
         } catch (SQLException e) {
-            throw new MovimentacaoException(
-                    MessageUtils.buscaValidacao("movimentacao.erro.criacao", e.getMessage()));
+            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.criacao", e.getMessage()));
         }
     }
 
     @Override
-    public Movimentacao buscarMovimentacaoPorId(long id) {
+    public Movimentacao buscarMovimentacaoPorId(long id) throws MovimentacaoException {
         String sql = SqlLoaderUtils.getSql("movimentacao.buscar.por.id");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return gerarMovimentacao(rs);
-            } else {
-                throw new NaoEncontradoException(MessageUtils.buscaValidacao("movimentacao.nao.encontrado", id));
-            }
+            return executarQueryMovimentacao(stmt);
         } catch (SQLException e) {
-            throw new MovimentacaoException(
-                    MessageUtils.buscaValidacao("movimentacao.erro.buscar", e.getMessage()));
+            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.buscar", e.getMessage()));
         }
     }
 
-    @Override
-    public Movimentacao fecharMovimentacao(long id) {
-        String atualizaSql = SqlLoaderUtils.getSql("movimentacao.fecha");
 
+    @Override
+    public Movimentacao fecharMovimentacao(long id) throws MovimentacaoException {
+        String sql = SqlLoaderUtils.getSql("movimentacao.fecha");
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement atualizaStmt = conn.prepareStatement(atualizaSql)) {
-            atualizaStmt.setTimestamp(1, java.sql.Timestamp.valueOf(LocalDateTime.now()));
-            atualizaStmt.setLong(2, id);
-            int rowsAffected = atualizaStmt.executeUpdate();
-            if (rowsAffected == 0) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setTimestamp(1, java.sql.Timestamp.valueOf(LocalDateTime.now()));
+            stmt.setLong(2, id);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                return buscarMovimentacaoPorId(id);
+            } else {
                 throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.nao.encontrada", id));
             }
-            return buscarMovimentacaoPorId(id);
         } catch (SQLException e) {
             throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.buscar", e.getMessage()));
         }
     }
 
     @Override
-    public List<Movimentacao> listaMovimentacoes() {
+    public List<Movimentacao> listaMovimentacoes() throws MovimentacaoException {
         String sql = SqlLoaderUtils.getSql("movimentacao.todos");
-        List<Movimentacao> movimentacoes = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-
+            List<Movimentacao> movimentacoes = new ArrayList<>();
             while (rs.next()) {
-                Movimentacao movimentacao = gerarMovimentacao(rs);
-                movimentacoes.add(movimentacao);
+                movimentacoes.add(gerarMovimentacao(rs));
             }
+            return movimentacoes;
         } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
+            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
         }
-        return movimentacoes;
-    }
-
-
-    @Override
-    public List<Movimentacao> listaMovimentacoesPorContainer(long idConteiner) {
-        String sql = SqlLoaderUtils.getSql("movimentacao.todos.por.container");
-        List<Movimentacao> movimentacoes = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, idConteiner);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Movimentacao movimentacao = gerarMovimentacao(rs);
-                    movimentacoes.add(movimentacao);
-                }
-            }
-        } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
-        }
-        return movimentacoes;
     }
 
     @Override
-    public List<Movimentacao> listaMovimentacoesPorCliente(long idCliente) {
+    public List<Movimentacao> listaMovimentacoesPorCliente(long idCliente) throws MovimentacaoException {
         String sql = SqlLoaderUtils.getSql("movimentacao.todos.por.cliente");
-        List<Movimentacao> movimentacoes = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setLong(1, idCliente);
+            List<Movimentacao> movimentacoes = new ArrayList<>();
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Movimentacao movimentacao = gerarMovimentacao(rs);
-                    movimentacoes.add(movimentacao);
+                    movimentacoes.add(gerarMovimentacao(rs));
                 }
+                return movimentacoes;
             }
         } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
+            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
         }
-        return movimentacoes;
+    }
+
+    @Override
+    public List<Movimentacao> listaMovimentacoesPorContainer(long idConteiner) throws MovimentacaoException {
+        String sql = SqlLoaderUtils.getSql("movimentacao.todos.por.container");
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, idConteiner);
+            List<Movimentacao> movimentacoes = new ArrayList<>();
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    movimentacoes.add(gerarMovimentacao(rs));
+                }
+                return movimentacoes;
+            }
+        } catch (SQLException e) {
+            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
+        }
+    }
+
+    private void preencherStatementCriar(PreparedStatement stmt, Movimentacao movimentacao) throws SQLException {
+        stmt.setString(1, movimentacao.getTipo().name());
+        stmt.setTimestamp(2, java.sql.Timestamp.valueOf(movimentacao.getHoraInicio()));
+        stmt.setTimestamp(3, movimentacao.getHoraFim() != null ? java.sql.Timestamp.valueOf(movimentacao.getHoraFim()) : null);
+        stmt.setLong(4, movimentacao.getConteiner().getId());
+    }
+
+    private Movimentacao executarQueryMovimentacao(PreparedStatement stmt) throws SQLException {
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return gerarMovimentacao(rs);
+            } else {
+                throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.nao.encontrado"));
+            }
+        }
+    }
+
+    private long relacionarContainerMovimentacao(PreparedStatement stmt, Movimentacao movimentacao) throws SQLException {
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                long id = rs.getLong(1);
+                conteineresMovimentacoesDAO.insereConteineresMovimentacoes(new ConteineresMovimentacoes(movimentacao.getConteiner().getId(), id));
+                return id;
+            } else {
+                throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.conteiner.erro"));
+            }
+        }
     }
 
     private Movimentacao gerarMovimentacao(ResultSet rs) throws SQLException {
-        Movimentacao movimentacao = new Movimentacao();
-        Timestamp timestamp = rs.getTimestamp("hora_fim");
-        movimentacao.setId(rs.getLong("id"));
-        movimentacao.setHoraFim((timestamp != null) ? timestamp.toLocalDateTime() : null);
-        movimentacao.setHoraInicio(rs.getTimestamp("hora_inicio").toLocalDateTime());
-
+        long id = rs.getLong("id");
+        LocalDateTime horaInicio = rs.getTimestamp("hora_inicio").toLocalDateTime();
+        LocalDateTime horaFim = rs.getTimestamp("hora_fim") != null ? rs.getTimestamp("hora_fim").toLocalDateTime() : null;
         Conteiner conteiner = conteinerDAO.buscarContainerPorId(rs.getLong("conteiner_id"));
-        movimentacao.setConteiner(conteiner);
-        movimentacao.setTipo(ETipoMovimentacao.valueOf(rs.getString("tipo")));
-
-        return movimentacao;
+        return new Movimentacao(id, ETipoMovimentacao.valueOf(rs.getString("tipo")), horaInicio, horaFim, conteiner);
     }
+
 }

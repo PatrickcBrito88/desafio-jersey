@@ -19,6 +19,14 @@ public class Movimentacao {
     public Movimentacao() {
     }
 
+    public Movimentacao(Long id, ETipoMovimentacao tipo, LocalDateTime horaInicio, LocalDateTime horaFim, Conteiner conteiner) {
+        this.id = id;
+        this.tipo = tipo;
+        this.horaInicio = horaInicio;
+        this.horaFim = horaFim;
+        this.conteiner = conteiner;
+    }
+
     public Movimentacao(Long id, ETipoMovimentacao tipo, Conteiner conteiner) {
         this.id = id;
         this.tipo = tipo;

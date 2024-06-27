@@ -4,13 +4,21 @@ import java.util.List;
 
 public class ConteinerUsuarioDTO {
 
-    private UsuarioDTO usuario;
+    private ClienteDTO cliente;
     private List<ConteinerDTO> conteineres;
 
 
-    public ConteinerUsuarioDTO(UsuarioDTO usuario, List<ConteinerDTO> conteineres) {
+    public ConteinerUsuarioDTO(ClienteDTO cliente, List<ConteinerDTO> conteineres) {
         this.conteineres = conteineres;
-        this.usuario = usuario;
+        this.cliente = cliente;
+    }
+
+    public ClienteDTO getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(ClienteDTO cliente) {
+        this.cliente = cliente;
     }
 
     public List<ConteinerDTO> getConteineres() {
@@ -21,11 +29,5 @@ public class ConteinerUsuarioDTO {
         this.conteineres = conteineres;
     }
 
-    public UsuarioDTO getUsuario() {
-        return usuario;
-    }
 
-    public void setUsuario(UsuarioDTO usuario) {
-        this.usuario = usuario;
-    }
 }
