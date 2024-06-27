@@ -44,7 +44,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            return executarQueryUsuario(stmt);
+            return executarQueryUsuario(stmt, id);
         } catch (SQLException e) {
             throw new UsuarioException(
                     MessageUtils.buscaValidacao("usuario.erro.buscar", e.getMessage()));
@@ -99,13 +99,13 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         }
     }
 
-    private Usuario executarQueryUsuario(PreparedStatement stmt) throws SQLException, UsuarioException {
+    private Usuario executarQueryUsuario(PreparedStatement stmt, long id) throws SQLException, UsuarioException {
         try (ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 return gerarUsuario(rs);
             } else {
                 throw new NaoEncontradoException(
-                        MessageUtils.buscaValidacao("usuario.nao.encontrado"));
+                        MessageUtils.buscaValidacao("usuario.nao.encontrado", id));
             }
         }
     }
