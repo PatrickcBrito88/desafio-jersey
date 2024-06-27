@@ -1,12 +1,12 @@
 package org.brito.desafiojersey.domain;
 
-public class ConteineresMovimentacoes {
+public class ConteinerMovimentacao {
 
     private long conteinerId;
 
     private long movimentacaoId;
 
-    public ConteineresMovimentacoes(long conteinerId, long movimentacaoId) {
+    public ConteinerMovimentacao(long conteinerId, long movimentacaoId) {
         this.conteinerId = conteinerId;
         this.movimentacaoId = movimentacaoId;
     }

@@ -23,6 +23,22 @@ public class Conteiner {
 
     private List<Movimentacao> movimentacoes = new ArrayList<>();
 
+    public Conteiner() {
+    }
+
+
+    public Conteiner(Long id, String identificacao,
+                     Cliente cliente, ETipoConteiner tipo,
+                     ECategoria categoria, EStatus status) {
+        this.id = id;
+        this.identificacao = identificacao;
+        this.cliente = cliente;
+        this.tipo = tipo;
+        this.categoria = categoria;
+        this.status = status;
+        this.movimentacoes = movimentacoes;
+    }
+
     public Long getId() {
         return id;
     }

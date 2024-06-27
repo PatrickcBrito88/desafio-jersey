@@ -2,29 +2,32 @@ package org.brito.desafiojersey.dao.implementation;
 
 import jakarta.inject.Inject;
 import org.brito.desafiojersey.dao.ConteinerDAO;
-import org.brito.desafiojersey.dao.ConteineresMovimentacoesDAO;
+import org.brito.desafiojersey.dao.ConteinerMovimentacaoDAO;
 import org.brito.desafiojersey.dao.MovimentacaoDAO;
+import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.domain.Conteiner;
-import org.brito.desafiojersey.domain.ConteineresMovimentacoes;
+import org.brito.desafiojersey.domain.ConteinerMovimentacao;
 import org.brito.desafiojersey.domain.Movimentacao;
 import org.brito.desafiojersey.enums.ETipoMovimentacao;
 import org.brito.desafiojersey.exceptions.MovimentacaoException;
+import org.brito.desafiojersey.exceptions.NaoEncontradoException;
 import org.brito.desafiojersey.utils.MessageUtils;
-import org.brito.desafiojersey.utils.SqlLoaderUtils;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
+
 public class MovimentacaoDAOImpl implements MovimentacaoDAO {
-    private final ConteineresMovimentacoesDAO conteineresMovimentacoesDAO;
+    private final ConteinerMovimentacaoDAO conteinerMovimentacaoDAO;
     private final ConteinerDAO conteinerDAO;
 
     @Inject
-    public MovimentacaoDAOImpl(ConteineresMovimentacoesDAO conteineresMovimentacoesDAO, ConteinerDAO conteinerDAO) {
-        this.conteineresMovimentacoesDAO = conteineresMovimentacoesDAO;
+    public MovimentacaoDAOImpl(ConteinerMovimentacaoDAO conteinerMovimentacaoDAO, ConteinerDAO conteinerDAO) {
+        this.conteinerMovimentacaoDAO = conteinerMovimentacaoDAO;
         this.conteinerDAO = conteinerDAO;
     }
 
@@ -37,7 +40,8 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
             stmt.executeUpdate();
             return relacionarContainerMovimentacao(stmt, movimentacao);
         } catch (SQLException e) {
-            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.criacao", e.getMessage()));
+            throw new MovimentacaoException(
+                    MessageUtils.buscaValidacao("movimentacao.erro.criacao", e.getMessage()));
         }
     }
 
@@ -47,9 +51,10 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            return executarQueryMovimentacao(stmt);
+            return executarQueryMovimentacao(stmt, id);
         } catch (SQLException e) {
-            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.buscar", e.getMessage()));
+            throw new MovimentacaoException(
+                    MessageUtils.buscaValidacao(e.getMessage()));
         }
     }
 
@@ -65,10 +70,12 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
             if (rowsAffected > 0) {
                 return buscarMovimentacaoPorId(id);
             } else {
-                throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.nao.encontrada", id));
+                throw new MovimentacaoException(
+                        MessageUtils.buscaValidacao("movimentacao.nao.encontrada", id));
             }
         } catch (SQLException e) {
-            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.buscar", e.getMessage()));
+            throw new MovimentacaoException(
+                    MessageUtils.buscaValidacao("movimentacao.erro.buscar", e.getMessage()));
         }
     }
 
@@ -84,7 +91,8 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
             }
             return movimentacoes;
         } catch (SQLException e) {
-            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
+            throw new MovimentacaoException(
+                    MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
         }
     }
 
@@ -102,7 +110,8 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
                 return movimentacoes;
             }
         } catch (SQLException e) {
-            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
+            throw new MovimentacaoException(
+                    MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
         }
     }
 
@@ -120,7 +129,8 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
                 return movimentacoes;
             }
         } catch (SQLException e) {
-            throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
+            throw new MovimentacaoException(
+                    MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
         }
     }
 
@@ -131,26 +141,23 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
         stmt.setLong(4, movimentacao.getConteiner().getId());
     }
 
-    private Movimentacao executarQueryMovimentacao(PreparedStatement stmt) throws SQLException {
+    private Movimentacao executarQueryMovimentacao(PreparedStatement stmt, long id) throws SQLException {
         try (ResultSet rs = stmt.executeQuery()) {
             if (rs.next()) {
                 return gerarMovimentacao(rs);
             } else {
-                throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.nao.encontrado"));
+                throw new NaoEncontradoException(
+                        MessageUtils.buscaValidacao("movimentacao.nao.encontrada", id));
             }
         }
     }
 
     private long relacionarContainerMovimentacao(PreparedStatement stmt, Movimentacao movimentacao) throws SQLException {
-        try (ResultSet rs = stmt.getGeneratedKeys()) {
-            if (rs.next()) {
-                long id = rs.getLong(1);
-                conteineresMovimentacoesDAO.insereConteineresMovimentacoes(new ConteineresMovimentacoes(movimentacao.getConteiner().getId(), id));
-                return id;
-            } else {
-                throw new MovimentacaoException(MessageUtils.buscaValidacao("movimentacao.conteiner.erro"));
-            }
-        }
+        long id = buscarKeyGerada(stmt);
+        conteinerMovimentacaoDAO.insereConteineresMovimentacoes(
+                new ConteinerMovimentacao(movimentacao.getConteiner().getId(), id));
+
+        return id;
     }
 
     private Movimentacao gerarMovimentacao(ResultSet rs) throws SQLException {

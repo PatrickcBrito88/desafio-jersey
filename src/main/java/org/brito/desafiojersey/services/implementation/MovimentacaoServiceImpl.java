@@ -6,6 +6,7 @@ import org.brito.desafiojersey.dao.MovimentacaoDAO;
 import org.brito.desafiojersey.domain.Conteiner;
 import org.brito.desafiojersey.domain.Movimentacao;
 import org.brito.desafiojersey.dtos.MovimentacaoDTO;
+import org.brito.desafiojersey.exceptions.MovimentacaoException;
 import org.brito.desafiojersey.services.MovimentacaoService;
 import org.brito.desafiojersey.utils.MessageUtils;
 import org.brito.desafiojersey.utils.Page;
@@ -14,6 +15,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class MovimentacaoServiceImpl implements MovimentacaoService {
 
@@ -49,10 +51,19 @@ public class MovimentacaoServiceImpl implements MovimentacaoService {
 
     @Override
     public MovimentacaoDTO fecharMovimentacao(long id) {
+        verificaMovimentacaoFechada(id);
         Movimentacao movimentacao = movimentacaoDAO.fecharMovimentacao(id);
         Conteiner conteiner = conteinerDAO.buscarContainerPorId(movimentacao.getConteiner().getId());
         movimentacao.setConteiner(conteiner);
         return modelMapper.map(movimentacao, MovimentacaoDTO.class);
+    }
+
+    private void verificaMovimentacaoFechada(long id) {
+        Movimentacao movimentacaoArmazenada = movimentacaoDAO.buscarMovimentacaoPorId(id);
+        if (Objects.nonNull(movimentacaoArmazenada.getHoraFim())){
+            throw new MovimentacaoException(
+                    MessageUtils.buscaValidacao("movimentacao.ja.fechada"));
+        }
     }
 
     @Override

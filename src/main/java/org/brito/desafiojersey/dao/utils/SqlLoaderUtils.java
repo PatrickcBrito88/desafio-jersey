@@ -1,6 +1,7 @@
-package org.brito.desafiojersey.utils;
+package org.brito.desafiojersey.dao.utils;
 
 import org.brito.desafiojersey.exceptions.CarregamentoExternoException;
+import org.brito.desafiojersey.utils.MessageUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -18,7 +18,6 @@ public class ErrorResponse {
         this.timestamp = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).format(formatter);
     }
 
-    // Getters e setters
     public int getStatusCode() {
         return statusCode;
     }

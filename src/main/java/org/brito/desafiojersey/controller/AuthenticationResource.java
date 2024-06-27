@@ -6,7 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.brito.desafiojersey.annotations.NaoAutenticado;
-import org.brito.desafiojersey.security.UsuarioCredenciaisDTO;
+import org.brito.desafiojersey.security.dtos.UsuarioCredenciaisDTO;
 import org.brito.desafiojersey.services.ValidacaoService;
 
 @Path("/auth")

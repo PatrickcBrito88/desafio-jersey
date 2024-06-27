@@ -1,10 +1,10 @@
 package org.brito.desafiojersey.controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.xml.bind.annotation.XmlRootElement; // Para suporte a XML, se necessário
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@XmlRootElement // Assegura que a classe pode ser convertida para XML, se necessário
+@XmlRootElement
 public class DefaultResponse<T> {
     private Integer status;
     private T dados;
@@ -17,7 +17,6 @@ public class DefaultResponse<T> {
         this.dados = dados;
     }
 
-    // Getters e setters são importantes para que o JSON-B e o JAXB possam funcionar corretamente
     public Integer getStatus() {
         return status;
     }

@@ -2,8 +2,11 @@ package org.brito.desafiojersey.services.implementation;
 
 import jakarta.inject.Inject;
 import org.brito.desafiojersey.dao.ClienteDAO;
+import org.brito.desafiojersey.dao.ConteinerDAO;
 import org.brito.desafiojersey.domain.Cliente;
+import org.brito.desafiojersey.domain.Conteiner;
 import org.brito.desafiojersey.dtos.ClienteDTO;
+import org.brito.desafiojersey.exceptions.ConflitoException;
 import org.brito.desafiojersey.services.ClienteService;
 import org.brito.desafiojersey.utils.MessageUtils;
 import org.brito.desafiojersey.utils.Page;
@@ -16,11 +19,13 @@ public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteDAO clienteDAO;
     private final ModelMapper modelMapper;
+    private final ConteinerDAO conteinerDAO;
 
     @Inject
-    public ClienteServiceImpl(ClienteDAO clienteDAO, ModelMapper modelMapper) {
+    public ClienteServiceImpl(ClienteDAO clienteDAO, ModelMapper modelMapper, ConteinerDAO conteinerDAO) {
         this.clienteDAO = clienteDAO;
         this.modelMapper = modelMapper;
+        this.conteinerDAO = conteinerDAO;
     }
 
     @Override
@@ -45,8 +50,17 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public String deletarCliente(Integer id) {
+        verificarSeClientePossuiConteiner(id);
         clienteDAO.deletarCliente(id);
         return MessageUtils.buscaValidacao("cliente.deletado.sucesso", id);
+    }
+
+    private void verificarSeClientePossuiConteiner(Integer id) {
+        List<Conteiner> listaConteineresCliente = conteinerDAO.listaConteineresPorCliente(id);
+        if (!listaConteineresCliente.isEmpty()){
+            throw new ConflitoException(
+                    MessageUtils.buscaValidacao("cliente.possui.conteiner"));
+        }
     }
 
     @Override

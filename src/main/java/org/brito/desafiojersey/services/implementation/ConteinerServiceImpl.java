@@ -3,13 +3,16 @@ package org.brito.desafiojersey.services.implementation;
 import jakarta.inject.Inject;
 import org.brito.desafiojersey.dao.ClienteDAO;
 import org.brito.desafiojersey.dao.ConteinerDAO;
+import org.brito.desafiojersey.dao.MovimentacaoDAO;
 import org.brito.desafiojersey.domain.Cliente;
 import org.brito.desafiojersey.domain.Conteiner;
+import org.brito.desafiojersey.domain.Movimentacao;
+import org.brito.desafiojersey.dtos.ClienteDTO;
 import org.brito.desafiojersey.dtos.ConteinerDTO;
 import org.brito.desafiojersey.dtos.ConteinerUsuarioDTO;
-import org.brito.desafiojersey.dtos.UsuarioDTO;
+import org.brito.desafiojersey.exceptions.ConflitoException;
+import org.brito.desafiojersey.services.ClienteService;
 import org.brito.desafiojersey.services.ConteinerService;
-import org.brito.desafiojersey.services.UsuarioService;
 import org.brito.desafiojersey.utils.MessageUtils;
 import org.brito.desafiojersey.utils.Page;
 import org.brito.desafiojersey.utils.PaginadorUtils;
@@ -22,14 +25,18 @@ public class ConteinerServiceImpl implements ConteinerService {
     private final ConteinerDAO conteinerDAO;
     private final ModelMapper modelMapper;
     private final ClienteDAO clienteDAO;
-    private final UsuarioService usuarioService;
+    private final ClienteService clienteService;
+    private final MovimentacaoDAO movimentacaoDAO;
 
     @Inject
-    public ConteinerServiceImpl(ConteinerDAO conteinerDAO, ModelMapper modelMapper, ClienteDAO clienteDAO, UsuarioService usuarioService) {
+    public ConteinerServiceImpl(ConteinerDAO conteinerDAO, ModelMapper modelMapper,
+                                ClienteDAO clienteDAO, ClienteService clienteService,
+                                MovimentacaoDAO movimentacaoDAO) {
         this.conteinerDAO = conteinerDAO;
         this.modelMapper = modelMapper;
         this.clienteDAO = clienteDAO;
-        this.usuarioService = usuarioService;
+        this.clienteService = clienteService;
+        this.movimentacaoDAO = movimentacaoDAO;
     }
 
     @Override
@@ -61,8 +68,17 @@ public class ConteinerServiceImpl implements ConteinerService {
 
     @Override
     public String deletarConteiner(Integer id) {
+        verificaSeConteinerPossuiMovimentacao(id);
         conteinerDAO.deletarContainer(id);
         return MessageUtils.buscaValidacao("conteiner.deletado.sucesso", id);
+    }
+
+    private void verificaSeConteinerPossuiMovimentacao(Integer id) {
+        List<Movimentacao> listaMovimentacoes = movimentacaoDAO.listaMovimentacoesPorContainer(id);
+        if (!listaMovimentacoes.isEmpty()){
+            throw new ConflitoException(
+                    MessageUtils.buscaValidacao("conteiner.possui.movimentacao"));
+        }
     }
 
     @Override
@@ -80,8 +96,8 @@ public class ConteinerServiceImpl implements ConteinerService {
         List<ConteinerDTO> conteinerDTOS = conteineres.stream()
                 .map(u -> modelMapper.map(u, ConteinerDTO.class))
                 .toList();
-        UsuarioDTO usuarioDTO = usuarioService.buscarUsuarioPorId(idCliente);
-        return new ConteinerUsuarioDTO(usuarioDTO, conteinerDTOS);
+        ClienteDTO clienteDTO = clienteService.buscarClientePorId(idCliente);
+        return new ConteinerUsuarioDTO(clienteDTO, conteinerDTOS);
     }
 
 }

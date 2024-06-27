@@ -1,14 +1,13 @@
 package org.brito.desafiojersey.dao.implementation;
 
 import org.brito.desafiojersey.dao.ClienteDAO;
+import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.domain.Cliente;
 import org.brito.desafiojersey.dtos.ClienteDTO;
 import org.brito.desafiojersey.exceptions.ClienteException;
 import org.brito.desafiojersey.exceptions.NaoEncontradoException;
-import org.brito.desafiojersey.exceptions.UsuarioException;
 import org.brito.desafiojersey.utils.MessageUtils;
-import org.brito.desafiojersey.utils.SqlLoaderUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,106 +16,99 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
+
 public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
-    public long salvarCliente(ClienteDTO clienteDTO) {
+    public long salvarCliente(ClienteDTO clienteDTO) throws ClienteException {
         String sql = SqlLoaderUtils.getSql("cliente.salvar");
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, clienteDTO.getNome());
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong(1);
-            } else {
-                throw new ClienteException(MessageUtils.buscaValidacao("database.erro.buscar.id"));
-            }
+            stmt.executeUpdate();
+            return buscarKeyGerada(stmt);
         } catch (SQLException e) {
-            throw new ClienteException(
-                    MessageUtils.buscaValidacao("cliente.erro.salva", e.getMessage()));
+            throw new ClienteException(MessageUtils.buscaValidacao("cliente.erro.salvar", e.getMessage()));
         }
     }
 
     @Override
-    public Cliente buscarClientePorId(long id) {
+    public Cliente buscarClientePorId(long id) throws ClienteException {
         String sql = SqlLoaderUtils.getSql("cliente.buscar.por.id");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return gerarCliente(rs);
-            } else {
-                throw new NaoEncontradoException(MessageUtils.buscaValidacao("cliente.nao.encontrado", id));
-            }
+            return executarQueryClientes(stmt, id);
         } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("cliente.erro.buscar", e.getMessage()));
+            throw new ClienteException(MessageUtils.buscaValidacao("cliente.erro.buscar", e.getMessage()));
         }
     }
 
-    private static Cliente gerarCliente(ResultSet rs) throws SQLException {
-        Cliente cliente = new Cliente();
-        cliente.setId(rs.getLong("id"));
-        cliente.setNome(rs.getString("nome"));
-        return cliente;
-    }
-
     @Override
-    public Integer atualizarCliente(ClienteDTO clienteDTO, Integer id) {
+    public Integer atualizarCliente(ClienteDTO clienteDTO, Integer id) throws ClienteException {
         String sql = SqlLoaderUtils.getSql("cliente.atualizar");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, clienteDTO.getNome());
             stmt.setLong(2, id);
-            int rowsUpdated = stmt.executeUpdate();
-            if (rowsUpdated == 0) {
-                throw new NaoEncontradoException(
-                        MessageUtils.buscaValidacao("cliente.nao.encontrado", id));
+            int linhasAtualizadas = stmt.executeUpdate();
+            if (linhasAtualizadas == 0) {
+                throw new NaoEncontradoException(MessageUtils.buscaValidacao("cliente.nao.encontrado", id));
             }
             return id;
         } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("cliente.erro.atualizar", e.getMessage()));
+            throw new ClienteException(MessageUtils.buscaValidacao("cliente.erro.atualizar", e.getMessage()));
         }
     }
 
     @Override
-    public void deletarCliente(Integer id) {
+    public void deletarCliente(Integer id) throws ClienteException {
         String sql = SqlLoaderUtils.getSql("cliente.deletar");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            int rowsDeleted = stmt.executeUpdate();
-            if (rowsDeleted == 0) {
-                throw new NaoEncontradoException(
-                        MessageUtils.buscaValidacao("cliente.nao.encontrado", id));
+            int linhasDeletadas = stmt.executeUpdate();
+            if (linhasDeletadas == 0) {
+                throw new NaoEncontradoException(MessageUtils.buscaValidacao("cliente.nao.encontrado", id));
             }
         } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("cliente.erro.deletar", e.getMessage()));
+            throw new ClienteException(MessageUtils.buscaValidacao("cliente.erro.deletar", e.getMessage()));
         }
     }
 
     @Override
-    public List<Cliente> listarClientes() {
+    public List<Cliente> listarClientes() throws ClienteException {
         String sql = SqlLoaderUtils.getSql("cliente.todos");
-        List<Cliente> clientes = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Cliente cliente = gerarCliente(rs);
-                clientes.add(cliente);
-            }
+            return gerarListaClientes(rs);
         } catch (SQLException e) {
-            throw new UsuarioException(
-                    MessageUtils.buscaValidacao("usuario.erro.listar", e.getMessage()));
+            throw new ClienteException(MessageUtils.buscaValidacao("cliente.erro.listar", e.getMessage()));
+        }
+    }
+
+
+    private Cliente executarQueryClientes(PreparedStatement stmt, long id) throws SQLException, ClienteException {
+        try (ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return gerarCliente(rs);
+            } else {
+                throw new NaoEncontradoException(MessageUtils.buscaValidacao("cliente.nao.encontrado", id));
+            }
+        }
+    }
+
+    private List<Cliente> gerarListaClientes(ResultSet rs) throws SQLException {
+        List<Cliente> clientes = new ArrayList<>();
+        while (rs.next()) {
+            clientes.add(gerarCliente(rs));
         }
         return clientes;
     }
 
+    private static Cliente gerarCliente(ResultSet rs) throws SQLException {
+        return new Cliente(rs.getLong("id"), rs.getString("nome"));
+    }
 }

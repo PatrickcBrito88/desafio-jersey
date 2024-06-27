@@ -1,4 +1,4 @@
-package org.brito.desafiojersey.security;
+package org.brito.desafiojersey.security.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

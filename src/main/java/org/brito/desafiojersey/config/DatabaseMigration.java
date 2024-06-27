@@ -1,6 +1,6 @@
 package org.brito.desafiojersey.config;
 
-import org.brito.desafiojersey.utils.SqlLoaderUtils;
+import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.flywaydb.core.Flyway;
 
 import java.sql.Connection;

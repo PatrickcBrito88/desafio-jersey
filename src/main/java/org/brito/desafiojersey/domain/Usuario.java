@@ -12,6 +12,12 @@ public class Usuario {
     public Usuario() {
     }
 
+    public Usuario(long id, String login, ERole role) {
+        this.id = id;
+        this.login = login;
+        this.role = role;
+    }
+
     public long getId() {
         return id;
     }
