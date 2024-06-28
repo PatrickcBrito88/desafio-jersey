@@ -5,6 +5,7 @@ import org.brito.desafiojersey.config.ObjectMapperConfig;
 import org.brito.desafiojersey.config.VariaveisAmbienteConfig;
 import org.brito.desafiojersey.provider.ExceptionsMapeadasProvider;
 import org.brito.desafiojersey.provider.ServicosMapeadosProvider;
+import org.brito.desafiojersey.security.JwtAuthenticationFilter;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -25,7 +26,8 @@ public class DesafioJerseysBackendApplication {
                 .packages("org.brito.desafiojersey.controller", "org.brito.desafiojersey.exceptions.mapper")
                 .register(new ServicosMapeadosProvider())
                 .register(ExceptionsMapeadasProvider.class)
-                .register(new ObjectMapperConfig());
+                .register(new ObjectMapperConfig())
+                .register(JwtAuthenticationFilter.class);
     }
 
     private static void startServer(String uri, ResourceConfig resourceConfig) {
