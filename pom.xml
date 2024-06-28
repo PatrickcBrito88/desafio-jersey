@@ -12,10 +12,18 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jersey.version>3.1.5</jersey.version>
         <postgres.version>42.7.3</postgres.version>
         <jwt.version>0.12.6</jwt.version>
         <snake.yaml.version>2.2</snake.yaml.version>
         <crypt.version>0.4</crypt.version>
+        <flyway.version>9.22.3</flyway.version>
+        <jaxb.version>4.0.0</jaxb.version>
+        <activation.version>2.0.1</activation.version>
+        <modelmapper.version>3.0.0</modelmapper.version>
+        <jackson.version>2.13.1</jackson.version>
+        <validation.api.version>3.0.2</validation.api.version>
+        <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
     </properties>
 
     <dependencyManagement>
@@ -23,7 +31,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey</groupId>
                 <artifactId>jersey-bom</artifactId>
-                <version>3.1.5</version>
+                <version>${jersey.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -105,69 +113,70 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.22.3</version>
+            <version>${flyway.version}</version>
         </dependency>
 
         <!-- API JAXB -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
+            <version>${jaxb.version}</version>
         </dependency>
 
         <!-- Implementação JAXB -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>4.0.0</version>
+            <version>${jaxb.version}</version>
         </dependency>
 
-        <!-- Adicionar suporte para DatatypeConverter -->
+        <!-- Jakarta Activation -->
         <dependency>
             <groupId>com.sun.activation</groupId>
             <artifactId>jakarta.activation</artifactId>
-            <version>2.0.1</version>
+            <version>${activation.version}</version>
         </dependency>
 
-        <!-- MODEL MAPPER -->
+        <!-- Model Mapper -->
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>3.0.0</version>
+            <version>${modelmapper.version}</version>
         </dependency>
 
+        <!-- Jackson Jakarta -->
         <dependency>
             <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
             <artifactId>jackson-jakarta-rs-json-provider</artifactId>
-            <version>2.13.1</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Módulo para suporte à Java Time API -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.13.1</version>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Jakarta Bean Validation API -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.0.2</version>
+            <version>${validation.api.version}</version>
         </dependency>
 
         <!-- Hibernate Validator -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>8.0.0.Final</version>
+            <version>${hibernate.validator.version}</version>
         </dependency>
 
-        <!-- Habilitar Validação no Jersey -->
+        <!-- Jersey Validation -->
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-bean-validation</artifactId>
-            <version>3.0.2</version>
+            <version>${jersey.version}</version>
         </dependency>
 
     </dependencies>
