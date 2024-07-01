@@ -81,14 +81,37 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
-    public List<Cliente> listarClientes() throws ClienteException {
+    public List<Cliente> listarClientes(Integer paginaAtual, Integer tamanhoPagina) throws ClienteException {
         String sql = SqlLoaderUtils.getSql("cliente.todos");
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            return gerarListaClientes(rs);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             stmt.setInt(1, tamanhoPagina);
+             stmt.setInt(2, paginaAtual);
+             try(ResultSet rs = stmt.executeQuery()) {
+                 List<Cliente> clientes = new ArrayList<>();
+                 while (rs.next()) {
+                     Cliente cliente = gerarCliente(rs);
+                     clientes.add(cliente);
+                 }
+                 return clientes;
+             }
+
         } catch (SQLException e) {
             throw new ClienteException(MessageUtils.buscaValidacao("cliente.erro.listar", e.getMessage()));
+        }
+    }
+
+    @Override
+    public long buscarTotalClientes() throws SQLException {
+        String sql = SqlLoaderUtils.getSql("cliente.total");
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()){
+                return rs.getLong(1);
+            } else {
+                throw new ClienteException(MessageUtils.buscaValidacao("erro.buscar.total"));
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 package org.brito.desafiojersey.services;
 
 import org.brito.desafiojersey.dtos.ClienteDTO;
-import org.brito.desafiojersey.utils.Page;
+import org.brito.desafiojersey.utils.PaginatedResponse;
+
+import java.sql.SQLException;
 
 /**
  * Interface de serviço para operações relacionadas a clientes.
@@ -48,6 +50,6 @@ public interface ClienteService {
      * @param tamanhoPagina O número de registros por página.
      * @return Uma página de {@link ClienteDTO}.
      */
-    Page<ClienteDTO> listarClientesPaginados(Integer paginaAtual, Integer tamanhoPagina);
+    PaginatedResponse<ClienteDTO> listarClientesPaginados(Integer paginaAtual, Integer tamanhoPagina) throws SQLException;
 
 }

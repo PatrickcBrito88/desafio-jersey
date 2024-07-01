@@ -3,6 +3,7 @@ package org.brito.desafiojersey.dao;
 import org.brito.desafiojersey.domain.Cliente;
 import org.brito.desafiojersey.dtos.ClienteDTO;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -44,8 +45,16 @@ public interface ClienteDAO {
 
     /**
      * Lista todos os clientes cadastrados no banco de dados.
+     * @param paginaAtual a pagina atual que será exibida
+     * @param tamanhoPagina o tamanho da página que retornará da consulta
      *
      * @return Uma lista de {@link Cliente}.
      */
-    List<Cliente> listarClientes();
+    List<Cliente> listarClientes(Integer paginaAtual, Integer tamanhoPagina);
+
+    /**
+     * Conta o quantitativo de clientes no banco de dados
+     * @return quantitativo de clientes no banco de dados
+     */
+    long buscarTotalClientes() throws SQLException;
 }
