@@ -49,4 +49,14 @@ public class PaginatedResponse<T> {
     public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
     }
+
+    public static <T> PaginatedResponse<T> of(List<T> content, int paginaAtual, int tamanhoPagina, long totalElements) {
+        PaginatedResponse<T> response = new PaginatedResponse<>();
+        response.setContent(content);
+        response.setPageNumber(paginaAtual);
+        response.setPageSize(tamanhoPagina);
+        response.setTotalElements(totalElements);
+        response.setTotalPages((int) Math.ceil((double) totalElements / tamanhoPagina));
+        return response;
+    }
 }

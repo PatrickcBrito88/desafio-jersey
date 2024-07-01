@@ -1,6 +1,7 @@
 package org.brito.desafiojersey.dao.implementation;
 
 import org.brito.desafiojersey.dao.ClienteDAO;
+import org.brito.desafiojersey.dao.utils.DatabaseUtils;
 import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.domain.Cliente;
@@ -13,7 +14,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
@@ -22,6 +22,8 @@ import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
  * Implementação da interface {@link ClienteDAO} utilizando JDBC.
  */
 public class ClienteDAOImpl implements ClienteDAO {
+
+    public static final String NOME_TABELA = "clientes";
 
     @Override
     public long salvarCliente(ClienteDTO clienteDTO) throws ClienteException {
@@ -81,24 +83,8 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
-    public List<Cliente> listarClientes(Integer paginaAtual, Integer tamanhoPagina) throws ClienteException {
-        String sql = SqlLoaderUtils.getSql("cliente.todos");
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-             stmt.setInt(1, tamanhoPagina);
-             stmt.setInt(2, paginaAtual);
-             try(ResultSet rs = stmt.executeQuery()) {
-                 List<Cliente> clientes = new ArrayList<>();
-                 while (rs.next()) {
-                     Cliente cliente = gerarCliente(rs);
-                     clientes.add(cliente);
-                 }
-                 return clientes;
-             }
-
-        } catch (SQLException e) {
-            throw new ClienteException(MessageUtils.buscaValidacao("cliente.erro.listar", e.getMessage()));
-        }
+    public List<Cliente> listarClientes(Integer paginaAtual, Integer tamanhoPagina) throws ClienteException, SQLException {
+        return DatabaseUtils.listarPaginado(Cliente.class, NOME_TABELA, paginaAtual, tamanhoPagina);
     }
 
     @Override
@@ -126,13 +112,6 @@ public class ClienteDAOImpl implements ClienteDAO {
         }
     }
 
-    private List<Cliente> gerarListaClientes(ResultSet rs) throws SQLException {
-        List<Cliente> clientes = new ArrayList<>();
-        while (rs.next()) {
-            clientes.add(gerarCliente(rs));
-        }
-        return clientes;
-    }
 
     private static Cliente gerarCliente(ResultSet rs) throws SQLException {
         return new Cliente(rs.getLong("id"), rs.getString("nome"));

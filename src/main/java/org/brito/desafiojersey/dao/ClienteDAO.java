@@ -50,7 +50,7 @@ public interface ClienteDAO {
      *
      * @return Uma lista de {@link Cliente}.
      */
-    List<Cliente> listarClientes(Integer paginaAtual, Integer tamanhoPagina);
+    List<Cliente> listarClientes(Integer paginaAtual, Integer tamanhoPagina) throws SQLException;
 
     /**
      * Conta o quantitativo de clientes no banco de dados

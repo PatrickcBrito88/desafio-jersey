@@ -70,13 +70,8 @@ public class ClienteServiceImpl implements ClienteService {
     public PaginatedResponse<ClienteDTO> listarClientesPaginados(Integer paginaAtual, Integer tamanhoPagina) throws SQLException {
         List<Cliente> clientes = clienteDAO.listarClientes(paginaAtual, tamanhoPagina);
         long totalElements = clienteDAO.buscarTotalClientes();
-        int totalPages = (int) Math.ceil((double) totalElements / paginaAtual);
-        PaginatedResponse<ClienteDTO> response = new PaginatedResponse<>();
-        response.setTotalElements(totalElements);
-        response.setTotalPages(totalPages);
-        response.setContent(clientes.stream().map(c -> modelMapper.map(c, ClienteDTO.class)).toList());
-        response.setPageNumber(paginaAtual);
-        response.setPageSize(tamanhoPagina);
+        List<ClienteDTO> clienteDTOs = clientes.stream().map(c -> modelMapper.map(c, ClienteDTO.class)).toList();
+        PaginatedResponse<ClienteDTO> response = PaginatedResponse.of(clienteDTOs, paginaAtual, tamanhoPagina, totalElements);
 
         return response;
 
