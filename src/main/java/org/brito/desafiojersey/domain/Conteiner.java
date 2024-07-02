@@ -6,6 +6,7 @@ import org.brito.desafiojersey.enums.ETipoConteiner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Conteiner {
 
@@ -68,7 +69,7 @@ public class Conteiner {
     }
 
     public void setTipo(String tipo) {
-        this.tipo = ETipoConteiner.valueOf(tipo);
+        this.tipo = Objects.isNull(tipo) ? null : ETipoConteiner.valueOf(tipo);
     }
 
     public ECategoria getCategoria() {
@@ -76,7 +77,7 @@ public class Conteiner {
     }
 
     public void setCategoria(String categoria) {
-        this.categoria = ECategoria.valueOf(categoria);
+        this.categoria = Objects.isNull(categoria) ? null : ECategoria.valueOf(categoria);
     }
 
     public EStatus getStatus() {
@@ -84,7 +85,7 @@ public class Conteiner {
     }
 
     public void setStatus(String status) {
-        this.status = EStatus.valueOf(status);
+        this.status = Objects.isNull(status) ? null : EStatus.valueOf(status);
     }
 
     public List<Movimentacao> getMovimentacoes() {

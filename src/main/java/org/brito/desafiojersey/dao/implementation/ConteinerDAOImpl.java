@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
+import static org.brito.desafiojersey.utils.ObjectUtils.convertToLong;
 
 /**
  * Implementação da interface {@link ConteinerDAO} utilizando JDBC e injeção de dependências.
@@ -107,7 +108,7 @@ public class ConteinerDAOImpl implements ConteinerDAO {
         return resultados.stream()
                 .map(r -> {
                     Conteiner conteiner = new Conteiner();
-                    conteiner.setId(((Integer) r.get("id")).longValue());
+                    conteiner.setId(convertToLong(r.get("id")));
                     conteiner.setIdentificacao((String) r.get("identificacao"));
                     conteiner.setCliente(clienteDAO.buscarClientePorId(((Integer) r.get("cliente_id")).longValue()));
                     conteiner.setTipo((String) r.get("tipo"));

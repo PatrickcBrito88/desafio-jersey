@@ -1,7 +1,9 @@
 package org.brito.desafiojersey.dao;
 
 import org.brito.desafiojersey.domain.Movimentacao;
+import org.brito.desafiojersey.exceptions.MovimentacaoException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -38,7 +40,7 @@ public interface MovimentacaoDAO {
      *
      * @return Uma lista de {@link Movimentacao}.
      */
-    List<Movimentacao> listaMovimentacoes();
+    List<Movimentacao> listaMovimentacoes(Integer paginaAtual, Integer tamanhoPagina) throws MovimentacaoException, SQLException;
 
     /**
      * Lista todas as movimentações associadas a um contêiner específico.
@@ -55,4 +57,11 @@ public interface MovimentacaoDAO {
      * @return Uma lista de {@link Movimentacao} vinculadas ao cliente especificado.
      */
     List<Movimentacao> listaMovimentacoesPorCliente(long idCliente);
+
+    /**
+     * Busca a quantidade total de itens na tabela
+     *
+     * @return a quantidade total de itens na tabela
+     */
+    long buscaQuantidadeTotalItens();
 }

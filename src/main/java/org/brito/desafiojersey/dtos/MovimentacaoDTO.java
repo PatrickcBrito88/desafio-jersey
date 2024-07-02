@@ -30,8 +30,8 @@ public class MovimentacaoDTO {
         return tipo;
     }
 
-    public void setTipo(ETipoMovimentacao tipo) {
-        this.tipo = tipo;
+    public void setTipo(String tipo) {
+        this.tipo = ETipoMovimentacao.valueOf(tipo);
     }
 
     public LocalDateTime getHoraInicio() {

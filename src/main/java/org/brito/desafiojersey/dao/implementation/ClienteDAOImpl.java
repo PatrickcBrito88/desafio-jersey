@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
+import static org.brito.desafiojersey.utils.ObjectUtils.convertToLong;
 
 /**
  * Implementação da interface {@link ClienteDAO} utilizando JDBC.
@@ -90,7 +91,7 @@ public class ClienteDAOImpl implements ClienteDAO {
         return resultado.stream()
                 .map(r -> {
                     Cliente cliente = new Cliente();
-                    cliente.setId((Long) r.get("id"));
+                    cliente.setId(convertToLong(r.get("id")));
                     cliente.setNome((String) r.get("nome"));
                     return cliente;
                 })
