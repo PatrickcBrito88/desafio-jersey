@@ -1,6 +1,7 @@
 package org.brito.desafiojersey.dao.implementation;
 
 import org.brito.desafiojersey.dao.ClienteDAO;
+import org.brito.desafiojersey.dao.utils.DaoUtils;
 import org.brito.desafiojersey.dao.utils.DatabaseUtils;
 import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.brito.desafiojersey.db.DatabaseConnection;
@@ -15,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
 
@@ -84,21 +86,20 @@ public class ClienteDAOImpl implements ClienteDAO {
 
     @Override
     public List<Cliente> listarClientes(Integer paginaAtual, Integer tamanhoPagina) throws ClienteException, SQLException {
-        return DatabaseUtils.listarPaginado(Cliente.class, NOME_TABELA, paginaAtual, tamanhoPagina);
+        List<Map<String, Object>> resultado = DatabaseUtils.listarPaginado(NOME_TABELA, paginaAtual, tamanhoPagina);
+        return resultado.stream()
+                .map(r -> {
+                    Cliente cliente = new Cliente();
+                    cliente.setId((Long) r.get("id"));
+                    cliente.setNome((String) r.get("nome"));
+                    return cliente;
+                })
+                .toList();
     }
 
     @Override
     public long buscarTotalClientes() throws SQLException {
-        String sql = SqlLoaderUtils.getSql("cliente.total");
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()){
-                return rs.getLong(1);
-            } else {
-                throw new ClienteException(MessageUtils.buscaValidacao("erro.buscar.total"));
-            }
-        }
+        return DaoUtils.buscaQuantidadeTotalItensTabela(NOME_TABELA);
     }
 
 

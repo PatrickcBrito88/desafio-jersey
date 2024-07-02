@@ -1,7 +1,9 @@
 package org.brito.desafiojersey.dao;
 
 import org.brito.desafiojersey.domain.Conteiner;
+import org.brito.desafiojersey.exceptions.ConteinerException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -43,10 +45,12 @@ public interface ConteinerDAO {
 
     /**
      * Lista todos os contêineres cadastrados no banco de dados.
+     * @param paginaAtual a pagina atual a ser exibida
+     * @param tamanhoPagina o tamanho da paginação
      *
      * @return Uma lista de {@link Conteiner}.
      */
-    List<Conteiner> listarContaineres();
+    List<Conteiner> listarContaineres(Integer paginaAtual, Integer tamanhoPagina) throws ConteinerException, SQLException;
 
     /**
      * Lista contêineres associados a um determinado cliente.
@@ -55,4 +59,11 @@ public interface ConteinerDAO {
      * @return Uma lista de {@link Conteiner}.
      */
     List<Conteiner> listaConteineresPorCliente(long idCliente);
+
+    /**
+     * Busca a quantidade total de itens na tabela
+     *
+     * @return a quantidade total de itens na tabela
+     */
+    long buscarQuantidadeTotalTabela();
 }

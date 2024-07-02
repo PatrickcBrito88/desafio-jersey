@@ -2,7 +2,9 @@ package org.brito.desafiojersey.services;
 
 import org.brito.desafiojersey.dtos.ConteinerDTO;
 import org.brito.desafiojersey.dtos.ConteinerUsuarioDTO;
-import org.brito.desafiojersey.utils.Page;
+import org.brito.desafiojersey.utils.PaginatedResponse;
+
+import java.sql.SQLException;
 
 /**
  * Interface de serviço para operações relacionadas a contêineres.
@@ -47,9 +49,10 @@ public interface ConteinerService {
      *
      * @param paginaAtual A página atual.
      * @param tamanhoPagina O tamanho da página.
+     *
      * @return Uma página de {@link ConteinerDTO}.
      */
-    Page<ConteinerDTO> listarConteinersPaginados(Integer paginaAtual, Integer tamanhoPagina);
+    PaginatedResponse<ConteinerDTO> listarConteinersPaginados(Integer paginaAtual, Integer tamanhoPagina) throws SQLException;
 
     /**
      * Lista todos os contêineres associados a um cliente.

@@ -3,6 +3,8 @@ package org.brito.desafiojersey.dao.implementation;
 import jakarta.inject.Inject;
 import org.brito.desafiojersey.dao.ClienteDAO;
 import org.brito.desafiojersey.dao.ConteinerDAO;
+import org.brito.desafiojersey.dao.utils.DaoUtils;
+import org.brito.desafiojersey.dao.utils.DatabaseUtils;
 import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.domain.Cliente;
@@ -20,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
 
@@ -29,6 +32,8 @@ import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
 public class ConteinerDAOImpl implements ConteinerDAO {
 
     private final ClienteDAO clienteDAO;
+
+    private static final String NOME_TABELA = "conteineres";
 
     @Inject
     public ConteinerDAOImpl(ClienteDAO clienteDAO) {
@@ -97,16 +102,21 @@ public class ConteinerDAOImpl implements ConteinerDAO {
     }
 
     @Override
-    public List<Conteiner> listarContaineres() throws ConteinerException {
-        String sql = SqlLoaderUtils.getSql("conteiner.todos");
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            return gerarListaConteineres(rs);
-        } catch (SQLException e) {
-            throw new ConteinerException(
-                    MessageUtils.buscaValidacao("conteiner.erro.listar", e.getMessage()));
-        }
+    public List<Conteiner> listarContaineres(Integer paginaAtual, Integer tamanhoPagina) throws ConteinerException, SQLException {
+        List<Map<String, Object>> resultados =  DatabaseUtils.listarPaginado(NOME_TABELA, paginaAtual, tamanhoPagina);
+        return resultados.stream()
+                .map(r -> {
+                    Conteiner conteiner = new Conteiner();
+                    conteiner.setId(((Integer) r.get("id")).longValue());
+                    conteiner.setIdentificacao((String) r.get("identificacao"));
+                    conteiner.setCliente(clienteDAO.buscarClientePorId(((Integer) r.get("cliente_id")).longValue()));
+                    conteiner.setTipo((String) r.get("tipo"));
+                    conteiner.setCategoria((String) r.get("categoria"));
+                    conteiner.setStatus((String) r.get("status"));
+
+                    return conteiner;
+                })
+                .toList();
     }
 
     @Override
@@ -120,6 +130,11 @@ public class ConteinerDAOImpl implements ConteinerDAO {
             throw new ConteinerException(
                     MessageUtils.buscaValidacao("conteiner.erro.listar.por.cliente", e.getMessage()));
         }
+    }
+
+    @Override
+    public long buscarQuantidadeTotalTabela(){
+        return DaoUtils.buscaQuantidadeTotalItensTabela(NOME_TABELA);
     }
 
     private Conteiner executarQueryConteiner(PreparedStatement stmt, long id) throws SQLException, ConteinerException {

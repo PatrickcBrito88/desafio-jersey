@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class Movimentacao {
 
-    private Long id;
+    private long id;
 
     private ETipoMovimentacao tipo;
 
@@ -19,7 +19,7 @@ public class Movimentacao {
     public Movimentacao() {
     }
 
-    public Movimentacao(Long id, ETipoMovimentacao tipo, LocalDateTime horaInicio, LocalDateTime horaFim, Conteiner conteiner) {
+    public Movimentacao(long id, ETipoMovimentacao tipo, LocalDateTime horaInicio, LocalDateTime horaFim, Conteiner conteiner) {
         this.id = id;
         this.tipo = tipo;
         this.horaInicio = horaInicio;
@@ -27,7 +27,7 @@ public class Movimentacao {
         this.conteiner = conteiner;
     }
 
-    public Movimentacao(Long id, ETipoMovimentacao tipo, Conteiner conteiner) {
+    public Movimentacao(long id, ETipoMovimentacao tipo, Conteiner conteiner) {
         this.id = id;
         this.tipo = tipo;
         this.horaInicio = LocalDateTime.now();;
@@ -35,11 +35,11 @@ public class Movimentacao {
         this.conteiner = conteiner;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
