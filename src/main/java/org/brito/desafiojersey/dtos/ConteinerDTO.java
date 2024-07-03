@@ -57,24 +57,24 @@ public class ConteinerDTO {
         return tipo;
     }
 
-    public void setTipo(ETipoConteiner tipo) {
-        this.tipo = tipo;
+    public void setTipo(String tipo) {
+        this.tipo = ETipoConteiner.valueOf(tipo);
     }
 
     public ECategoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(ECategoria categoria) {
-        this.categoria = categoria;
+    public void setCategoria(String categoria) {
+        this.categoria = ECategoria.valueOf(categoria);
     }
 
     public EStatus getStatus() {
         return status;
     }
 
-    public void setStatus(EStatus status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = EStatus.valueOf(status);
     }
 
     public List<MovimentacaoDTO> getMovimentacoes() {

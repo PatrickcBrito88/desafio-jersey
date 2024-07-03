@@ -4,6 +4,8 @@ import jakarta.inject.Inject;
 import org.brito.desafiojersey.dao.ConteinerDAO;
 import org.brito.desafiojersey.dao.ConteinerMovimentacaoDAO;
 import org.brito.desafiojersey.dao.MovimentacaoDAO;
+import org.brito.desafiojersey.dao.utils.DaoUtils;
+import org.brito.desafiojersey.dao.utils.DatabaseUtils;
 import org.brito.desafiojersey.dao.utils.SqlLoaderUtils;
 import org.brito.desafiojersey.db.DatabaseConnection;
 import org.brito.desafiojersey.domain.Conteiner;
@@ -18,15 +20,20 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.brito.desafiojersey.dao.utils.DaoUtils.buscarKeyGerada;
+import static org.brito.desafiojersey.utils.ObjectUtils.convertToLocalDateTime;
+import static org.brito.desafiojersey.utils.ObjectUtils.convertToLong;
 
 /**
  * Implementação da interface {@link MovimentacaoDAO} utilizando JDBC e injeção de dependências para gerenciar movimentações.
  */
 public class MovimentacaoDAOImpl implements MovimentacaoDAO {
+
     private final ConteinerMovimentacaoDAO conteinerMovimentacaoDAO;
     private final ConteinerDAO conteinerDAO;
+    private static final String NOME_TABELA = "movimentacao";
 
     @Inject
     public MovimentacaoDAOImpl(ConteinerMovimentacaoDAO conteinerMovimentacaoDAO, ConteinerDAO conteinerDAO) {
@@ -83,16 +90,22 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
     }
 
     @Override
-    public List<Movimentacao> listaMovimentacoes() throws MovimentacaoException {
-        String sql = SqlLoaderUtils.getSql("movimentacao.todos");
+    public List<Movimentacao> listaMovimentacoes(Integer paginaAtual, Integer tamanhoPagina) throws MovimentacaoException, SQLException {
+        List<Map<String, Object>> resultados =  DatabaseUtils.listarPaginado(NOME_TABELA, paginaAtual, tamanhoPagina);
+
+        return mapToMovimentacao(resultados);
+    }
+
+    @Override
+    public List<Movimentacao> listaMovimentacoesPorCliente(long idCliente, Integer paginaAtual, Integer tamanhoPagina) throws MovimentacaoException {
+        String sql = SqlLoaderUtils.getSql("movimentacao.todos.por.cliente.paginado");
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            List<Movimentacao> movimentacoes = new ArrayList<>();
-            while (rs.next()) {
-                movimentacoes.add(gerarMovimentacao(rs));
-            }
-            return movimentacoes;
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, idCliente);
+            stmt.setInt(2, tamanhoPagina);
+            stmt.setInt(3, paginaAtual * tamanhoPagina);
+            List<Map<String, Object>> resultados = DatabaseUtils.listaMapPaginado(stmt);
+            return mapToMovimentacao(resultados);
         } catch (SQLException e) {
             throw new MovimentacaoException(
                     MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
@@ -100,18 +113,20 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
     }
 
     @Override
-    public List<Movimentacao> listaMovimentacoesPorCliente(long idCliente) throws MovimentacaoException {
-        String sql = SqlLoaderUtils.getSql("movimentacao.todos.por.cliente");
+    public long buscaQuantidadeTotalItens() {
+        return DaoUtils.buscaQuantidadeTotalItensTabela(NOME_TABELA);
+    }
+
+    @Override
+    public List<Movimentacao> listaMovimentacoesPorContainerPaginado(long idConteiner, Integer paginaAtual, Integer tamanhoPagina) throws MovimentacaoException {
+        String sql = SqlLoaderUtils.getSql("movimentacao.todos.por.container.paginado");
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setLong(1, idCliente);
-            List<Movimentacao> movimentacoes = new ArrayList<>();
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    movimentacoes.add(gerarMovimentacao(rs));
-                }
-                return movimentacoes;
-            }
+            stmt.setLong(1, idConteiner);
+            stmt.setInt(2, tamanhoPagina);
+            stmt.setInt(3, paginaAtual * tamanhoPagina);
+            List<Map<String, Object>> resultados = DatabaseUtils.listaMapPaginado(stmt);
+            return mapToMovimentacao(resultados);
         } catch (SQLException e) {
             throw new MovimentacaoException(
                     MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
@@ -135,6 +150,24 @@ public class MovimentacaoDAOImpl implements MovimentacaoDAO {
             throw new MovimentacaoException(
                     MessageUtils.buscaValidacao("movimentacao.erro.listar", e.getMessage()));
         }
+    }
+
+    private List<Movimentacao> mapToMovimentacao(List<Map<String, Object>> resultados) {
+        return resultados.stream()
+                .map(r -> {
+                    Movimentacao movimentacao = new Movimentacao();
+                    movimentacao.setId(convertToLong(r.get("id")));
+                    movimentacao.setTipo((String) r.get("tipo"));
+                    movimentacao.setHoraInicio(convertToLocalDateTime(r.get("hora_inicio")));
+                    movimentacao.setHoraFim(convertToLocalDateTime(r.get("hora_fim")));
+                    movimentacao.setConteiner(conteinerDAO.buscarContainerPorId(convertToLong(r.get("conteiner_id"))));
+                    return movimentacao;
+                })
+                .toList();
+    }
+
+    private Conteiner getConteiner(long id){
+        return conteinerDAO.buscarContainerPorId(id);
     }
 
     private void preencherStatementCriar(PreparedStatement stmt, Movimentacao movimentacao) throws SQLException {

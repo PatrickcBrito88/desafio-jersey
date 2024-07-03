@@ -6,10 +6,11 @@ import org.brito.desafiojersey.enums.ETipoConteiner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Conteiner {
 
-    private Long id;
+    private long id;
 
     private String identificacao;
 
@@ -27,7 +28,7 @@ public class Conteiner {
     }
 
 
-    public Conteiner(Long id, String identificacao,
+    public Conteiner(long id, String identificacao,
                      Cliente cliente, ETipoConteiner tipo,
                      ECategoria categoria, EStatus status) {
         this.id = id;
@@ -39,11 +40,11 @@ public class Conteiner {
         this.movimentacoes = movimentacoes;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -67,24 +68,24 @@ public class Conteiner {
         return tipo;
     }
 
-    public void setTipo(ETipoConteiner tipo) {
-        this.tipo = tipo;
+    public void setTipo(String tipo) {
+        this.tipo = Objects.isNull(tipo) ? null : ETipoConteiner.valueOf(tipo);
     }
 
     public ECategoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(ECategoria categoria) {
-        this.categoria = categoria;
+    public void setCategoria(String categoria) {
+        this.categoria = Objects.isNull(categoria) ? null : ECategoria.valueOf(categoria);
     }
 
     public EStatus getStatus() {
         return status;
     }
 
-    public void setStatus(EStatus status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = Objects.isNull(status) ? null : EStatus.valueOf(status);
     }
 
     public List<Movimentacao> getMovimentacoes() {

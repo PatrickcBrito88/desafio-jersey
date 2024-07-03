@@ -1,7 +1,9 @@
 package org.brito.desafiojersey.services;
 
 import org.brito.desafiojersey.dtos.MovimentacaoDTO;
-import org.brito.desafiojersey.utils.Page;
+import org.brito.desafiojersey.utils.PaginatedResponse;
+
+import java.sql.SQLException;
 
 /**
  * Interface de serviço para operações relacionadas a movimentações de contêineres.
@@ -39,7 +41,7 @@ public interface MovimentacaoService {
      * @param tamanhoPagina O tamanho da página.
      * @return Uma página de {@link MovimentacaoDTO}.
      */
-    Page<MovimentacaoDTO> listaMovimentacoes(Integer paginaAtual, Integer tamanhoPagina);
+    PaginatedResponse<MovimentacaoDTO> listaMovimentacoes(Integer paginaAtual, Integer tamanhoPagina) throws SQLException;
 
     /**
      * Lista todas as movimentações associadas a um contêiner específico de forma paginada.
@@ -49,7 +51,7 @@ public interface MovimentacaoService {
      * @param idConteiner O ID do contêiner.
      * @return Uma página de {@link MovimentacaoDTO}.
      */
-    Page<MovimentacaoDTO> listaMovimentacoesPorContainer(Integer paginaAtual, Integer tamanhoPagina, long idConteiner);
+    PaginatedResponse<MovimentacaoDTO> listaMovimentacoesPorContainer(Integer paginaAtual, Integer tamanhoPagina, long idConteiner);
 
     /**
      * Lista todas as movimentações associadas a um cliente específico de forma paginada.
@@ -59,6 +61,6 @@ public interface MovimentacaoService {
      * @param idCliente O ID do cliente.
      * @return Uma página de {@link MovimentacaoDTO}.
      */
-    Page<MovimentacaoDTO> listaMovimentacoesPorCliente(Integer paginaAtual, Integer tamanhoPagina, long idCliente);
+    PaginatedResponse<MovimentacaoDTO> listaMovimentacoesPorCliente(Integer paginaAtual, Integer tamanhoPagina, long idCliente);
 
 }

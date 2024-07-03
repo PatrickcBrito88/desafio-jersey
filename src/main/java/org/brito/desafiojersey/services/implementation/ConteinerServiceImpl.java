@@ -14,10 +14,10 @@ import org.brito.desafiojersey.exceptions.ConflitoException;
 import org.brito.desafiojersey.services.ClienteService;
 import org.brito.desafiojersey.services.ConteinerService;
 import org.brito.desafiojersey.utils.MessageUtils;
-import org.brito.desafiojersey.utils.Page;
-import org.brito.desafiojersey.utils.PaginadorUtils;
+import org.brito.desafiojersey.utils.PaginatedResponse;
 import org.modelmapper.ModelMapper;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -85,12 +85,12 @@ public class ConteinerServiceImpl implements ConteinerService {
     }
 
     @Override
-    public Page<ConteinerDTO> listarConteinersPaginados(Integer paginaAtual, Integer tamanhoPagina) {
-        List<Conteiner> conteineres = conteinerDAO.listarContaineres();
-        List<ConteinerDTO> conteinerDTOS = conteineres.stream()
-                .map(u -> modelMapper.map(u, ConteinerDTO.class))
-                .toList();
-        return PaginadorUtils.gerarPaginacao(conteinerDTOS, paginaAtual, tamanhoPagina);
+    public PaginatedResponse<ConteinerDTO> listarConteinersPaginados(Integer paginaAtual, Integer tamanhoPagina) throws SQLException {
+        List<Conteiner> conteineres = conteinerDAO.listarContaineres(paginaAtual, tamanhoPagina);
+        long totalElements = conteinerDAO.buscarQuantidadeTotalTabela();
+        List<ConteinerDTO> conteinerDTOS = conteineres.stream().map(c -> modelMapper.map(c, ConteinerDTO.class)).toList();
+
+        return PaginatedResponse.of(conteinerDTOS, paginaAtual, tamanhoPagina, totalElements);
     }
 
     @Override

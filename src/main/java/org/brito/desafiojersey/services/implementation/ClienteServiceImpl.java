@@ -9,10 +9,10 @@ import org.brito.desafiojersey.dtos.ClienteDTO;
 import org.brito.desafiojersey.exceptions.ConflitoException;
 import org.brito.desafiojersey.services.ClienteService;
 import org.brito.desafiojersey.utils.MessageUtils;
-import org.brito.desafiojersey.utils.Page;
-import org.brito.desafiojersey.utils.PaginadorUtils;
+import org.brito.desafiojersey.utils.PaginatedResponse;
 import org.modelmapper.ModelMapper;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -67,12 +67,14 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Page<ClienteDTO> listarClientesPaginados(Integer paginaAtual, Integer tamanhoPagina) {
-        List<Cliente> usuarios = clienteDAO.listarClientes();
-        List<ClienteDTO> clienteDTOS = usuarios.stream()
-                .map(u -> modelMapper.map(u, ClienteDTO.class))
-                .toList();
-        return PaginadorUtils.gerarPaginacao(clienteDTOS, paginaAtual, tamanhoPagina);
+    public PaginatedResponse<ClienteDTO> listarClientesPaginados(Integer paginaAtual, Integer tamanhoPagina) throws SQLException {
+        List<Cliente> clientes = clienteDAO.listarClientes(paginaAtual, tamanhoPagina);
+        long totalElements = clienteDAO.buscarTotalClientes();
+        List<ClienteDTO> clienteDTOs = clientes.stream().map(c -> modelMapper.map(c, ClienteDTO.class)).toList();
+        PaginatedResponse<ClienteDTO> response = PaginatedResponse.of(clienteDTOs, paginaAtual, tamanhoPagina, totalElements);
+
+        return response;
+
     }
 
 }
