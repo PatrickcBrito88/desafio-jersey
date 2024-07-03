@@ -19,23 +19,27 @@ public class DatabaseUtils {
             stmt.setInt(1, tamanhoPagina);
             stmt.setInt(2, paginaAtual * tamanhoPagina);
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                List<Map<String, Object>> resultados = new ArrayList<>();
-                ResultSetMetaData metaData = rs.getMetaData();
-                int columnCount = metaData.getColumnCount();
+            return listaMapPaginado(stmt);
+        }
+    }
 
-                while (rs.next()) {
-                    Map<String, Object> row = new HashMap<>();
-                    for (int i = 1; i <= columnCount; i++) {
-                        String columnName = metaData.getColumnName(i);
-                        Object columnValue = rs.getObject(i);
-                        row.put(columnName, columnValue);
-                    }
-                    resultados.add(row);
+    public static List<Map<String, Object>> listaMapPaginado(PreparedStatement stmt) throws SQLException {
+        try (ResultSet rs = stmt.executeQuery()) {
+            List<Map<String, Object>> resultados = new ArrayList<>();
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    Object columnValue = rs.getObject(i);
+                    row.put(columnName, columnValue);
                 }
-
-                return resultados;
+                resultados.add(row);
             }
+
+            return resultados;
         }
     }
 }

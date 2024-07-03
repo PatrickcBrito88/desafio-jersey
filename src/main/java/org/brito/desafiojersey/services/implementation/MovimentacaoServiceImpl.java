@@ -9,8 +9,6 @@ import org.brito.desafiojersey.dtos.MovimentacaoDTO;
 import org.brito.desafiojersey.exceptions.MovimentacaoException;
 import org.brito.desafiojersey.services.MovimentacaoService;
 import org.brito.desafiojersey.utils.MessageUtils;
-import org.brito.desafiojersey.utils.Page;
-import org.brito.desafiojersey.utils.PaginadorUtils;
 import org.brito.desafiojersey.utils.PaginatedResponse;
 import org.modelmapper.ModelMapper;
 
@@ -81,20 +79,22 @@ public class MovimentacaoServiceImpl implements MovimentacaoService {
     }
 
     @Override
-    public Page<MovimentacaoDTO> listaMovimentacoesPorContainer(Integer paginaAtual, Integer tamanhoPagina, long idConteiner) {
-        List<Movimentacao> movimentacoes = movimentacaoDAO.listaMovimentacoesPorContainer(idConteiner);
-        List<MovimentacaoDTO> movimentacoesDtos = movimentacoes.stream()
-                .map(u -> modelMapper.map(u, MovimentacaoDTO.class))
-                .toList();
-        return PaginadorUtils.gerarPaginacao(movimentacoesDtos, paginaAtual, tamanhoPagina);
+    public PaginatedResponse<MovimentacaoDTO> listaMovimentacoesPorContainer(Integer paginaAtual, Integer tamanhoPagina, long idConteiner) {
+        List<Movimentacao> movimentacoes = movimentacaoDAO.listaMovimentacoesPorContainerPaginado(idConteiner, paginaAtual, tamanhoPagina);
+        long totalElements = movimentacaoDAO.buscaQuantidadeTotalItens();
+        List<MovimentacaoDTO> movimentacaoDTOS = movimentacoes.stream().map(m -> modelMapper.map(m, MovimentacaoDTO.class)).toList();
+
+        return PaginatedResponse.of(movimentacaoDTOS, paginaAtual, tamanhoPagina, totalElements);
+
     }
 
     @Override
-    public Page<MovimentacaoDTO> listaMovimentacoesPorCliente(Integer paginaAtual, Integer tamanhoPagina, long idCliente) {
-        List<Movimentacao> movimentacoes = movimentacaoDAO.listaMovimentacoesPorCliente(idCliente);
-        List<MovimentacaoDTO> movimentacoesDtos = movimentacoes.stream()
-                .map(u -> modelMapper.map(u, MovimentacaoDTO.class))
-                .toList();
-        return PaginadorUtils.gerarPaginacao(movimentacoesDtos, paginaAtual, tamanhoPagina);
+    public PaginatedResponse<MovimentacaoDTO> listaMovimentacoesPorCliente(Integer paginaAtual, Integer tamanhoPagina, long idCliente) {
+        List<Movimentacao> movimentacoes = movimentacaoDAO.listaMovimentacoesPorCliente(idCliente, paginaAtual, tamanhoPagina);
+        long totalElements = movimentacaoDAO.buscaQuantidadeTotalItens();
+        List<MovimentacaoDTO> movimentacaoDTOS = movimentacoes.stream().map(m -> modelMapper.map(m, MovimentacaoDTO.class)).toList();
+
+        return PaginatedResponse.of(movimentacaoDTOS, paginaAtual, tamanhoPagina, totalElements);
+
     }
 }

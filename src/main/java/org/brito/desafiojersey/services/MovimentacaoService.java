@@ -1,7 +1,6 @@
 package org.brito.desafiojersey.services;
 
 import org.brito.desafiojersey.dtos.MovimentacaoDTO;
-import org.brito.desafiojersey.utils.Page;
 import org.brito.desafiojersey.utils.PaginatedResponse;
 
 import java.sql.SQLException;
@@ -52,7 +51,7 @@ public interface MovimentacaoService {
      * @param idConteiner O ID do contêiner.
      * @return Uma página de {@link MovimentacaoDTO}.
      */
-    Page<MovimentacaoDTO> listaMovimentacoesPorContainer(Integer paginaAtual, Integer tamanhoPagina, long idConteiner);
+    PaginatedResponse<MovimentacaoDTO> listaMovimentacoesPorContainer(Integer paginaAtual, Integer tamanhoPagina, long idConteiner);
 
     /**
      * Lista todas as movimentações associadas a um cliente específico de forma paginada.
@@ -62,6 +61,6 @@ public interface MovimentacaoService {
      * @param idCliente O ID do cliente.
      * @return Uma página de {@link MovimentacaoDTO}.
      */
-    Page<MovimentacaoDTO> listaMovimentacoesPorCliente(Integer paginaAtual, Integer tamanhoPagina, long idCliente);
+    PaginatedResponse<MovimentacaoDTO> listaMovimentacoesPorCliente(Integer paginaAtual, Integer tamanhoPagina, long idCliente);
 
 }
